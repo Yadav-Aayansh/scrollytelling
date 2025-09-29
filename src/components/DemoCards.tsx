@@ -20,40 +20,41 @@ interface DemoCardsProps {
 
 const DEMO_STORIES: DemoCard[] = [
   {
-    id: 'card-transactions',
-    title: 'Credit Card Fraud Detection Story',
-    description: 'Explore patterns in credit card transactions to understand fraud detection and spending behaviors across different demographics and merchant categories.',
-    dataset: 'card_transactions.csv',
-    datasetUrl: 'https://raw.githubusercontent.com/gramener/datasets/main/card_transactions.csv',
+    id: 'sample1',
+    title: 'Smartphones Dataset',
+    description: 'Analyze smartphone sales, pricing trends, and feature adoption across brands and regions. Understand how consumer preferences evolve with technology and market competition.',
+    dataset: 'sample1.csv',
+    datasetUrl: 'https://raw.githubusercontent.com/Yadav-Aayansh/scrollytelling/main/public/sample1.csv',
     htmlFile: 'sample1.html',
-    prompt: `Create an engaging scrollytelling story about credit card fraud detection. Focus on:
+    prompt: `Create an engaging scrollytelling story about smartphone adoption and sales trends. Focus on:
 
-1. **Transaction Volume Patterns**: Show how transaction amounts vary by time, location, and merchant category
-2. **Fraud Detection Insights**: Highlight patterns that distinguish fraudulent from legitimate transactions
-3. **Customer Behavior Analysis**: Explore spending habits across different demographics and card types
-4. **Risk Assessment**: Visualize high-risk scenarios and protective measures
+1. **Sales Trends**: Show growth patterns across years, regions, and brands  
+2. **Feature Evolution**: Highlight how specs (RAM, camera, battery, etc.) influence consumer demand  
+3. **Pricing Insights**: Compare budget vs premium smartphone markets  
+4. **Market Competition**: Visualize brand-wise market share and shifts over time  
 
-Make it educational and actionable for both consumers and financial institutions. Use compelling data visualizations that reveal the hidden patterns in financial data.`,
-    tags: ['Finance', 'Fraud Detection', 'Security', 'Analytics']
+Make it engaging for tech enthusiasts and business analysts. Use visualizations to reveal hidden dynamics in the smartphone industry.`,
+    tags: ['Smartphones', 'Technology', 'Market Trends', 'Consumer Behavior']
   },
   {
-    id: 'supply-chain',
-    title: 'Global Supply Chain Optimization',
-    description: 'Dive into supply chain data to uncover bottlenecks, optimize routes, and understand the complex web of global commerce and logistics.',
-    dataset: 'supply_chain.csv',
-    datasetUrl: 'https://raw.githubusercontent.com/gramener/datasets/main/supply_chain.csv',
+    id: 'sample2',
+    title: '100 Days of Deep Learning',
+    description: 'Track your deep learning journey over 100 days, exploring models, datasets, and progress milestones. See how skills improve and knowledge compounds with consistent practice.',
+    dataset: 'sample2.csv',
+    datasetUrl: 'https://raw.githubusercontent.com/Yadav-Aayansh/scrollytelling/main/public/sample2.csv',
     htmlFile: 'sample2.html',
-    prompt: `Create a compelling scrollytelling narrative about global supply chain optimization. Focus on:
+    prompt: `Create a compelling scrollytelling narrative about a 100-day deep learning journey. Focus on:
 
-1. **Supply Chain Flow**: Visualize the journey from suppliers to customers across different regions
-2. **Performance Metrics**: Show delivery times, costs, and efficiency across different routes and suppliers
-3. **Bottleneck Analysis**: Identify and highlight critical points where delays and issues occur
-4. **Optimization Opportunities**: Reveal data-driven insights for improving supply chain performance
+1. **Learning Progression**: Show daily/weekly growth in concepts and coding skills  
+2. **Model Building**: Highlight experiments with CNNs, RNNs, Transformers, etc.  
+3. **Project Milestones**: Visualize datasets used, models trained, and outcomes achieved  
+4. **Skill Growth**: Demonstrate how consistency accelerates expertise  
 
-Make it relevant for business leaders and supply chain professionals. Use dynamic visualizations that show the interconnected nature of global commerce and the impact of optimization strategies.`,
-    tags: ['Supply Chain', 'Logistics', 'Business Intelligence', 'Optimization']
+Make it inspiring for learners and practitioners. Use visualizations that capture growth, challenges, and achievements in the deep learning journey.`,
+    tags: ['Deep Learning', 'AI', 'Education', 'Learning Journey']
   }
 ];
+
 
 export const DemoCards: React.FC<DemoCardsProps> = ({ onLoadDemo, disabled }) => {
   const [activeTab, setActiveTab] = useState<{ [key: string]: 'prompt' | 'csv' | 'output' }>({});

@@ -1,0 +1,361 @@
+Year,Brand,Sales,Revenue,Region,MarketShare
+2015,Apple,77,62.9,North America,9.1
+2015,Apple,134,120.3,Europe,5.3
+2015,Apple,299,257.4,Asia,12.3
+2015,Apple,35,30.3,Latin America,8.1
+2015,Apple,33,39.4,Middle East & Africa,18.8
+2015,Samsung,299,327.0,North America,12.9
+2015,Samsung,162,221.4,Europe,3.1
+2015,Samsung,101,130.2,Asia,10.5
+2015,Samsung,99,94.1,Latin America,19.8
+2015,Samsung,72,62.3,Middle East & Africa,5.1
+2015,Huawei,196,239.6,North America,20.8
+2015,Huawei,255,299.7,Europe,24.4
+2015,Huawei,213,182.1,Asia,9.4
+2015,Huawei,205,246.9,Latin America,18.5
+2015,Huawei,43,54.3,Middle East & Africa,20.0
+2015,Xiaomi,60,83.9,North America,22.1
+2015,Xiaomi,214,212.8,Europe,17.0
+2015,Xiaomi,206,188.3,Asia,10.8
+2015,Xiaomi,156,201.4,Latin America,18.0
+2015,Xiaomi,56,68.7,Middle East & Africa,6.8
+2015,Oppo,145,132.6,North America,11.3
+2015,Oppo,132,168.9,Europe,21.5
+2015,Oppo,48,46.1,Asia,3.7
+2015,Oppo,181,195.6,Latin America,4.5
+2015,Oppo,181,171.7,Middle East & Africa,14.0
+2015,Vivo,254,228.6,North America,6.1
+2015,Vivo,295,290.3,Europe,15.9
+2015,Vivo,224,236.0,Asia,24.9
+2015,Vivo,90,104.1,Latin America,5.0
+2015,Vivo,44,61.7,Middle East & Africa,6.4
+2015,OnePlus,101,136.8,North America,12.3
+2015,OnePlus,52,55.6,Europe,16.1
+2015,OnePlus,259,303.1,Asia,24.4
+2015,OnePlus,25,31.9,Latin America,5.5
+2015,OnePlus,294,389.7,Middle East & Africa,19.9
+2015,Realme,194,170.3,North America,12.6
+2015,Realme,252,202.2,Europe,18.9
+2015,Realme,154,228.0,Asia,19.8
+2015,Realme,279,401.4,Latin America,22.2
+2015,Realme,172,238.9,Middle East & Africa,14.2
+2016,Apple,121,109.7,North America,19.8
+2016,Apple,296,434.4,Europe,23.3
+2016,Apple,20,24.4,Asia,13.7
+2016,Apple,77,111.7,Latin America,22.3
+2016,Apple,177,171.3,Middle East & Africa,8.3
+2016,Samsung,60,51.6,North America,13.7
+2016,Samsung,55,81.7,Europe,14.7
+2016,Samsung,84,74.7,Asia,13.5
+2016,Samsung,104,102.5,Latin America,22.2
+2016,Samsung,236,348.1,Middle East & Africa,23.4
+2016,Huawei,122,158.5,North America,11.8
+2016,Huawei,211,233.5,Europe,14.4
+2016,Huawei,81,78.9,Asia,4.4
+2016,Huawei,30,36.4,Latin America,8.1
+2016,Huawei,132,106.3,Middle East & Africa,18.6
+2016,Xiaomi,50,48.0,North America,22.9
+2016,Xiaomi,189,160.6,Europe,8.2
+2016,Xiaomi,268,254.6,Asia,5.9
+2016,Xiaomi,262,254.2,Latin America,13.4
+2016,Xiaomi,228,212.8,Middle East & Africa,5.1
+2016,Oppo,240,251.5,North America,12.0
+2016,Oppo,47,59.8,Europe,24.7
+2016,Oppo,70,59.0,Asia,19.0
+2016,Oppo,75,73.1,Latin America,7.2
+2016,Oppo,249,223.6,Middle East & Africa,7.0
+2016,Vivo,256,249.6,North America,23.3
+2016,Vivo,246,335.9,Europe,21.8
+2016,Vivo,70,58.5,Asia,25.0
+2016,Vivo,27,39.9,Latin America,23.4
+2016,Vivo,141,129.2,Middle East & Africa,13.7
+2016,OnePlus,129,181.3,North America,22.9
+2016,OnePlus,104,110.8,Europe,24.7
+2016,OnePlus,155,224.5,Asia,20.3
+2016,OnePlus,166,182.0,Latin America,24.1
+2016,OnePlus,269,244.3,Middle East & Africa,9.5
+2016,Realme,49,59.1,North America,14.9
+2016,Realme,180,151.2,Europe,15.9
+2016,Realme,277,399.9,Asia,14.7
+2016,Realme,49,72.2,Latin America,4.8
+2016,Realme,115,97.5,Middle East & Africa,4.5
+2017,Apple,140,151.6,North America,23.7
+2017,Apple,146,176.0,Europe,3.9
+2017,Apple,61,66.7,Asia,15.8
+2017,Apple,287,293.2,Latin America,8.7
+2017,Apple,180,174.1,Middle East & Africa,11.7
+2017,Samsung,173,193.8,North America,23.4
+2017,Samsung,57,46.0,Europe,16.7
+2017,Samsung,71,60.4,Asia,7.7
+2017,Samsung,155,138.4,Latin America,10.7
+2017,Samsung,55,77.9,Middle East & Africa,11.1
+2017,Huawei,100,110.7,North America,15.0
+2017,Huawei,174,213.7,Europe,24.7
+2017,Huawei,290,233.6,Asia,21.0
+2017,Huawei,173,251.2,Latin America,5.3
+2017,Huawei,88,86.7,Middle East & Africa,22.6
+2017,Xiaomi,99,98.1,North America,16.3
+2017,Xiaomi,195,183.8,Europe,17.0
+2017,Xiaomi,155,178.8,Asia,8.5
+2017,Xiaomi,46,39.8,Latin America,12.3
+2017,Xiaomi,161,133.8,Middle East & Africa,10.3
+2017,Oppo,86,107.2,North America,8.8
+2017,Oppo,246,291.8,Europe,12.4
+2017,Oppo,24,21.1,Asia,23.8
+2017,Oppo,96,113.5,Latin America,21.4
+2017,Oppo,95,104.6,Middle East & Africa,3.9
+2017,Vivo,206,294.4,North America,20.5
+2017,Vivo,40,57.2,Europe,7.6
+2017,Vivo,147,186.2,Asia,10.8
+2017,Vivo,228,337.8,Latin America,19.5
+2017,Vivo,141,198.1,Middle East & Africa,24.5
+2017,OnePlus,110,155.9,North America,3.5
+2017,OnePlus,190,256.1,Europe,12.1
+2017,OnePlus,147,145.1,Asia,20.3
+2017,OnePlus,75,80.1,Latin America,3.9
+2017,OnePlus,260,248.5,Middle East & Africa,21.0
+2017,Realme,255,266.4,North America,21.1
+2017,Realme,136,130.0,Europe,17.5
+2017,Realme,224,230.7,Asia,22.0
+2017,Realme,162,169.4,Latin America,14.2
+2017,Realme,294,303.4,Middle East & Africa,3.6
+2018,Apple,153,141.5,North America,24.2
+2018,Apple,155,128.2,Europe,16.1
+2018,Apple,196,256.8,Asia,9.9
+2018,Apple,281,247.5,Latin America,22.8
+2018,Apple,117,114.5,Middle East & Africa,18.6
+2018,Samsung,20,23.3,North America,20.7
+2018,Samsung,120,126.6,Europe,4.5
+2018,Samsung,189,233.6,Asia,17.6
+2018,Samsung,83,108.2,Latin America,9.6
+2018,Samsung,178,225.5,Middle East & Africa,10.2
+2018,Huawei,171,203.2,North America,7.2
+2018,Huawei,214,272.7,Europe,22.9
+2018,Huawei,174,188.7,Asia,21.3
+2018,Huawei,175,175.1,Latin America,12.5
+2018,Huawei,184,207.1,Middle East & Africa,12.7
+2018,Xiaomi,129,149.4,North America,20.5
+2018,Xiaomi,106,133.7,Europe,9.2
+2018,Xiaomi,191,165.3,Asia,23.9
+2018,Xiaomi,140,177.9,Latin America,7.9
+2018,Xiaomi,121,109.3,Middle East & Africa,4.0
+2018,Oppo,263,322.9,North America,19.9
+2018,Oppo,253,275.8,Europe,16.9
+2018,Oppo,119,155.0,Asia,11.4
+2018,Oppo,224,217.5,Latin America,17.4
+2018,Oppo,22,31.3,Middle East & Africa,21.9
+2018,Vivo,74,99.5,North America,7.8
+2018,Vivo,285,320.7,Europe,15.3
+2018,Vivo,82,91.8,Asia,20.6
+2018,Vivo,291,434.0,Latin America,16.1
+2018,Vivo,246,302.3,Middle East & Africa,18.8
+2018,OnePlus,278,305.4,North America,23.0
+2018,OnePlus,248,354.2,Europe,19.4
+2018,OnePlus,263,293.3,Asia,19.5
+2018,OnePlus,161,215.1,Latin America,14.5
+2018,OnePlus,142,140.9,Middle East & Africa,4.7
+2018,Realme,166,160.0,North America,10.4
+2018,Realme,296,253.5,Europe,6.3
+2018,Realme,216,277.7,Asia,18.5
+2018,Realme,52,56.7,Latin America,10.3
+2018,Realme,258,281.5,Middle East & Africa,7.6
+2019,Apple,235,252.1,North America,19.9
+2019,Apple,30,42.0,Europe,19.8
+2019,Apple,214,242.7,Asia,23.7
+2019,Apple,172,228.3,Latin America,21.8
+2019,Apple,234,275.4,Middle East & Africa,19.2
+2019,Samsung,132,150.7,North America,9.0
+2019,Samsung,268,219.8,Europe,10.4
+2019,Samsung,227,296.7,Asia,21.5
+2019,Samsung,85,126.4,Latin America,14.8
+2019,Samsung,221,268.4,Middle East & Africa,17.6
+2019,Huawei,62,77.5,North America,6.0
+2019,Huawei,256,237.4,Europe,8.7
+2019,Huawei,187,177.3,Asia,10.2
+2019,Huawei,214,212.9,Latin America,23.9
+2019,Huawei,235,229.5,Middle East & Africa,4.8
+2019,Xiaomi,29,38.4,North America,4.1
+2019,Xiaomi,199,190.4,Europe,4.5
+2019,Xiaomi,40,53.1,Asia,23.9
+2019,Xiaomi,122,169.3,Latin America,16.7
+2019,Xiaomi,142,126.1,Middle East & Africa,17.7
+2019,Oppo,131,147.4,North America,8.6
+2019,Oppo,208,190.8,Europe,16.4
+2019,Oppo,78,104.9,Asia,6.6
+2019,Oppo,179,156.7,Latin America,3.6
+2019,Oppo,179,215.3,Middle East & Africa,23.0
+2019,Vivo,212,228.5,North America,18.7
+2019,Vivo,58,70.4,Europe,21.3
+2019,Vivo,144,125.5,Asia,20.0
+2019,Vivo,81,109.9,Latin America,15.5
+2019,Vivo,41,42.8,Middle East & Africa,12.4
+2019,OnePlus,209,177.3,North America,17.2
+2019,OnePlus,26,36.3,Europe,21.1
+2019,OnePlus,74,81.7,Asia,11.0
+2019,OnePlus,255,330.3,Latin America,12.6
+2019,OnePlus,287,423.6,Middle East & Africa,8.9
+2019,Realme,295,396.0,North America,13.2
+2019,Realme,157,161.0,Europe,8.4
+2019,Realme,64,63.7,Asia,12.9
+2019,Realme,257,308.1,Latin America,17.7
+2019,Realme,192,157.5,Middle East & Africa,21.7
+2020,Apple,113,129.0,North America,10.8
+2020,Apple,152,157.8,Europe,22.4
+2020,Apple,161,191.4,Asia,14.4
+2020,Apple,117,100.6,Latin America,18.8
+2020,Apple,270,320.9,Middle East & Africa,8.3
+2020,Samsung,263,329.3,North America,13.8
+2020,Samsung,28,24.2,Europe,7.9
+2020,Samsung,144,146.1,Asia,15.8
+2020,Samsung,262,311.1,Latin America,10.6
+2020,Samsung,189,197.7,Middle East & Africa,13.0
+2020,Huawei,176,171.8,North America,5.7
+2020,Huawei,118,120.5,Europe,19.3
+2020,Huawei,114,106.5,Asia,19.2
+2020,Huawei,161,210.5,Latin America,24.5
+2020,Huawei,288,350.7,Middle East & Africa,24.6
+2020,Xiaomi,119,119.9,North America,10.9
+2020,Xiaomi,174,140.9,Europe,14.8
+2020,Xiaomi,160,133.1,Asia,4.2
+2020,Xiaomi,169,217.7,Latin America,5.8
+2020,Xiaomi,271,236.3,Middle East & Africa,3.3
+2020,Oppo,165,186.2,North America,12.7
+2020,Oppo,114,168.2,Europe,8.6
+2020,Oppo,264,232.3,Asia,4.4
+2020,Oppo,271,230.9,Latin America,16.8
+2020,Oppo,47,42.6,Middle East & Africa,20.8
+2020,Vivo,175,150.4,North America,8.5
+2020,Vivo,233,285.3,Europe,20.4
+2020,Vivo,135,181.3,Asia,11.4
+2020,Vivo,246,248.0,Latin America,15.9
+2020,Vivo,239,242.3,Middle East & Africa,16.7
+2020,OnePlus,70,102.4,North America,7.6
+2020,OnePlus,128,126.1,Europe,4.8
+2020,OnePlus,142,130.9,Asia,4.7
+2020,OnePlus,21,22.8,Latin America,18.2
+2020,OnePlus,260,261.0,Middle East & Africa,8.1
+2020,Realme,164,211.9,North America,13.0
+2020,Realme,139,201.1,Europe,20.3
+2020,Realme,121,132.8,Asia,15.0
+2020,Realme,96,137.8,Latin America,21.2
+2020,Realme,56,47.1,Middle East & Africa,20.4
+2021,Apple,167,184.9,North America,13.3
+2021,Apple,175,225.7,Europe,23.7
+2021,Apple,276,325.1,Asia,12.6
+2021,Apple,40,56.9,Latin America,19.2
+2021,Apple,148,121.1,Middle East & Africa,8.0
+2021,Samsung,30,45.0,North America,17.8
+2021,Samsung,157,188.9,Europe,19.8
+2021,Samsung,109,123.1,Asia,17.3
+2021,Samsung,162,150.2,Latin America,15.9
+2021,Samsung,271,400.6,Middle East & Africa,13.3
+2021,Huawei,229,236.6,North America,17.7
+2021,Huawei,102,105.1,Europe,18.3
+2021,Huawei,167,211.1,Asia,11.8
+2021,Huawei,38,42.5,Latin America,9.9
+2021,Huawei,185,163.0,Middle East & Africa,20.0
+2021,Xiaomi,283,389.8,North America,3.0
+2021,Xiaomi,297,333.6,Europe,4.2
+2021,Xiaomi,285,300.2,Asia,19.6
+2021,Xiaomi,246,327.7,Latin America,7.5
+2021,Xiaomi,87,126.1,Middle East & Africa,12.6
+2021,Oppo,268,237.2,North America,24.4
+2021,Oppo,142,184.2,Europe,9.8
+2021,Oppo,27,32.0,Asia,5.1
+2021,Oppo,78,87.6,Latin America,5.6
+2021,Oppo,98,112.6,Middle East & Africa,18.8
+2021,Vivo,280,362.3,North America,12.1
+2021,Vivo,267,396.8,Europe,8.4
+2021,Vivo,94,100.4,Asia,23.3
+2021,Vivo,280,370.3,Latin America,6.0
+2021,Vivo,55,54.6,Middle East & Africa,20.4
+2021,OnePlus,232,240.8,North America,20.3
+2021,OnePlus,156,214.4,Europe,9.2
+2021,OnePlus,172,238.4,Asia,15.8
+2021,OnePlus,270,379.5,Latin America,12.8
+2021,OnePlus,267,278.1,Middle East & Africa,15.1
+2021,Realme,298,317.1,North America,23.5
+2021,Realme,116,172.4,Europe,8.3
+2021,Realme,216,208.1,Asia,20.1
+2021,Realme,42,43.0,Latin America,13.4
+2021,Realme,215,230.1,Middle East & Africa,17.6
+2022,Apple,97,111.2,North America,3.8
+2022,Apple,277,408.8,Europe,10.3
+2022,Apple,71,100.2,Asia,12.7
+2022,Apple,289,415.4,Latin America,3.3
+2022,Apple,93,101.1,Middle East & Africa,17.4
+2022,Samsung,99,84.4,North America,20.2
+2022,Samsung,155,160.7,Europe,18.2
+2022,Samsung,61,85.2,Asia,21.8
+2022,Samsung,293,312.3,Latin America,10.0
+2022,Samsung,269,379.5,Middle East & Africa,3.8
+2022,Huawei,55,53.0,North America,18.1
+2022,Huawei,167,250.2,Europe,19.4
+2022,Huawei,242,359.3,Asia,19.7
+2022,Huawei,71,78.9,Latin America,18.3
+2022,Huawei,34,28.3,Middle East & Africa,20.5
+2022,Xiaomi,170,178.7,North America,12.5
+2022,Xiaomi,145,169.9,Europe,15.5
+2022,Xiaomi,112,102.9,Asia,4.7
+2022,Xiaomi,215,265.3,Latin America,8.3
+2022,Xiaomi,93,89.5,Middle East & Africa,17.0
+2022,Oppo,255,249.6,North America,3.2
+2022,Oppo,258,369.2,Europe,17.9
+2022,Oppo,100,85.2,Asia,23.8
+2022,Oppo,173,215.8,Latin America,12.3
+2022,Oppo,148,165.7,Middle East & Africa,9.6
+2022,Vivo,216,301.8,North America,5.3
+2022,Vivo,215,258.1,Europe,15.6
+2022,Vivo,171,139.4,Asia,21.3
+2022,Vivo,222,220.3,Latin America,15.5
+2022,Vivo,45,64.7,Middle East & Africa,19.4
+2022,OnePlus,166,222.9,North America,8.1
+2022,OnePlus,200,190.7,Europe,7.2
+2022,OnePlus,148,188.6,Asia,18.9
+2022,OnePlus,90,111.6,Latin America,22.9
+2022,OnePlus,40,40.7,Middle East & Africa,12.7
+2022,Realme,206,270.4,North America,5.0
+2022,Realme,171,175.9,Europe,12.1
+2022,Realme,122,108.9,Asia,14.9
+2022,Realme,207,242.5,Latin America,23.1
+2022,Realme,104,101.9,Middle East & Africa,21.1
+2023,Apple,266,392.9,North America,9.5
+2023,Apple,193,263.1,Europe,13.3
+2023,Apple,58,52.1,Asia,24.3
+2023,Apple,223,329.4,Latin America,20.7
+2023,Apple,207,178.7,Middle East & Africa,11.7
+2023,Samsung,155,182.2,North America,13.0
+2023,Samsung,154,186.2,Europe,21.1
+2023,Samsung,210,183.9,Asia,8.1
+2023,Samsung,32,39.5,Latin America,23.7
+2023,Samsung,187,269.4,Middle East & Africa,7.9
+2023,Huawei,52,64.7,North America,13.2
+2023,Huawei,174,218.3,Europe,5.6
+2023,Huawei,43,62.9,Asia,9.7
+2023,Huawei,272,239.7,Latin America,8.2
+2023,Huawei,295,264.0,Middle East & Africa,13.0
+2023,Xiaomi,296,323.6,North America,19.3
+2023,Xiaomi,99,140.6,Europe,17.4
+2023,Xiaomi,270,332.4,Asia,23.7
+2023,Xiaomi,163,134.1,Latin America,11.2
+2023,Xiaomi,247,274.5,Middle East & Africa,8.2
+2023,Oppo,205,178.3,North America,18.1
+2023,Oppo,298,426.5,Europe,17.2
+2023,Oppo,51,55.0,Asia,7.2
+2023,Oppo,82,120.1,Latin America,21.1
+2023,Oppo,66,83.4,Middle East & Africa,17.1
+2023,Vivo,30,25.1,North America,10.3
+2023,Vivo,84,113.5,Europe,7.5
+2023,Vivo,126,152.5,Asia,20.9
+2023,Vivo,139,143.2,Latin America,6.2
+2023,Vivo,21,20.9,Middle East & Africa,24.6
+2023,OnePlus,86,101.3,North America,20.6
+2023,OnePlus,76,96.0,Europe,3.6
+2023,OnePlus,27,28.4,Asia,20.3
+2023,OnePlus,185,150.0,Latin America,8.8
+2023,OnePlus,84,110.8,Middle East & Africa,14.6
+2023,Realme,52,58.9,North America,20.1
+2023,Realme,282,342.8,Europe,12.9
+2023,Realme,133,194.4,Asia,4.0
+2023,Realme,286,289.2,Latin America,17.2
+2023,Realme,35,29.5,Middle East & Africa,13.5

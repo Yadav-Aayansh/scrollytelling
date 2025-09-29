@@ -1,13 +1,1475 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Complete CSV to Scrollytelling Web App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smartphone Market Analysis: Sales, Revenue, and Market Share (2015-2023)</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/scrollama"></script>
+  <style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+      line-height: 1.6;
+      color: #333;
+    }
+    
+    .scrollytelling-container {
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .steps-container {
+      flex: 1;
+      padding-right: 2rem;
+    }
+    
+    .step {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem;
+      border-bottom: 1px solid #eee;
+      background-color: #f9f9f9;
+    }
+
+    .step:last-child {
+      border-bottom: none;
+    }
+
+    .step h2 {
+      margin-bottom: 1rem;
+      color: #0056b3;
+    }
+
+    .step p {
+      max-width: 600px;
+      line-height: 1.8;
+      font-size: 1.1rem;
+      color: #555;
+    }
+    
+    .chart-container {
+      flex: 1;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+    }
+    
+    #chart-svg {
+      max-width: 100%;
+      max-height: 90vh;
+      display: block; /* Ensure no extra space below SVG */
+    }
+
+    .axis text {
+      font-size: 0.85rem;
+      fill: #666;
+    }
+    .axis line, .axis path {
+      stroke: #ccc;
+    }
+
+    .bar {
+      fill: steelblue;
+    }
+
+    .line {
+      fill: none;
+      stroke: #d62728;
+      stroke-width: 3px;
+    }
+
+    .area {
+      fill: #d62728;
+      fill-opacity: 0.3;
+    }
+
+    .dot {
+      fill: #1f77b4;
+      stroke: #fff;
+      stroke-width: 1.5px;
+    }
+
+    .tooltip {
+      position: absolute;
+      text-align: center;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      pointer-events: none;
+      font-size: 0.8rem;
+      color: #333;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="scrollytelling-container">
+    <div class="steps-container">
+      <div class="step" data-step="0">
+        <h2>Global Smartphone Sales Overview (2015-2023)</h2>
+        <p>This visualization explores the dynamic global smartphone market from 2015 to 2023. We'll start by looking at the total annual sales across all brands and regions. The initial view shows the aggregated total sales, indicating a generally upward trend in the market over these years.</p>
+      </div>
+      <div class="step" data-step="1">
+        <h2>Top Brands by Total Sales</h2>
+        <p>Now, let's break down the overall market by individual brands. This step highlights the cumulative sales volume for each major brand across all years and regions. We can clearly see which brands have dominated the market in terms of units sold, with a few key players standing out significantly.</p>
+      </div>
+      <div class="step" data-step="2">
+        <h2>Regional Sales Distribution</h2>
+        <p>Beyond brands, understanding geographical distribution is crucial. This view aggregates total sales by region, revealing which parts of the world are the biggest markets for smartphones. Asia consistently leads, followed by other significant regions like Europe and North America.</p>
+      </div>
+      <div class="step" data-step="3">
+        <h2>Peak Sales Year for Each Brand</h2>
+        <p>Finally for our bar chart, we identify the year in which each brand achieved its highest sales volume. This allows us to observe individual brand performance peaks and understand their growth trajectories. For example, Apple and Samsung show consistent high performance, while others might have more fluctuating peaks.</p>
+      </div>
+      <div class="step" data-step="4">
+        <h2>Yearly Market Share Trends for Top Brands</h2>
+        <p>Moving to market share, this line chart illustrates the annual market share percentage for top brands from 2015 to 2023. We can observe how competition has evolved, with some brands gaining dominance while others faced challenges. This initial view focuses on Apple's market share over time.</p>
+      </div>
+      <div class="step" data-step="5">
+        <h2>Comparing Market Share: Apple vs. Samsung</h2>
+        <p>Here, we compare the market share evolution of two industry giants: Apple and Samsung. Their paths reveal intense competition, often mirroring each other's trends but with distinct periods of leadership. Observe how their market shares fluctuate annually, reflecting strategic shifts and product cycles.</p>
+      </div>
+      <div class="step" data-step="6">
+        <h2>Market Share Trends: Key Challengers</h2>
+        <p>This step expands our view to include major challengers like Huawei and Xiaomi. Their entry and growth significantly impacted the market landscape, particularly in Asian and emerging markets. Notice the rapid ascent of some brands and the challenges faced by others over the years.</p>
+      </div>
+      <div class="step" data-step="7">
+        <h2>Sales vs. Revenue: A Global Perspective</h2>
+        <p>Now, we shift to a scatter plot to explore the relationship between sales volume and revenue. Each point represents a brand's performance in a given year and region. We'll start by showing the overall relationship, where generally higher sales correlate with higher revenue, but with variations based on pricing strategies.</p>
+      </div>
+      <div class="step" data-step="8">
+        <h2>Sales vs. Revenue: Brand Performance</h2>
+        <p>Let's differentiate these points by brand. This view helps identify which brands achieve high revenue with relatively lower sales (indicating premium pricing) versus those with high sales but potentially lower per-unit revenue. Apple typically sits in the high revenue-per-sale quadrant.</p>
+      </div>
+      <div class="step" data-step="9">
+        <h2>Sales vs. Revenue: Regional Impact</h2>
+        <p>Finally, we analyze sales vs. revenue, colored by region. This reveals how different geographical markets contribute to a brand's overall performance. Some regions might be volume-driven, while others contribute more significantly to revenue, showcasing diverse market dynamics.</p>
+      </div>
+    </div>
+    <div class="chart-container">
+      <svg id="chart-svg"></svg>
+    </div>
+  </div>
+
+  <script>
+    // STEP 1: Parse and validate data
+    const rawData = [
+      {"0":"Year","1":"Brand","2":"Sales","3":"Revenue","4":"Region","5":"MarketShare"},
+      {"0":"2015","1":"Apple","2":"77","3":"62.9","4":"North America","5":"9.1"},
+      {"0":"2015","1":"Apple","2":"134","3":"120.3","4":"Europe","5":"5.3"},
+      {"0":"2015","1":"Apple","2":"299","3":"257.4","4":"Asia","5":"12.3"},
+      {"0":"2015","1":"Apple","2":"35","3":"30.3","4":"Latin America","5":"8.1"},
+      {"0":"2015","1":"Apple","2":"55","3":"48.1","4":"Middle East & Africa","5":"6.2"},
+      {"0":"2015","1":"Samsung","2":"155","3":"110.8","4":"North America","5":"18.2"},
+      {"0":"2015","1":"Samsung","2":"246","3":"175.7","4":"Europe","5":"10.9"},
+      {"0":"2015","1":"Samsung","2":"520","3":"371.2","4":"Asia","5":"21.4"},
+      {"0":"2015","1":"Samsung","2":"105","3":"75.1","4":"Latin America","5":"19.2"},
+      {"0":"2015","1":"Samsung","2":"164","3":"117.1","4":"Middle East & Africa","5":"20.8"},
+      {"0":"2015","1":"Huawei","2":"30","3":"15.3","4":"North America","5":"3.5"},
+      {"0":"2015","1":"Huawei","2":"52","3":"26.5","4":"Europe","5":"2.3"},
+      {"0":"2015","1":"Huawei","2":"110","3":"56.1","4":"Asia","5":"4.5"},
+      {"0":"2015","1":"Huawei","2":"24","3":"12.2","4":"Latin America","5":"4.4"},
+      {"0":"2015","1":"Huawei","2":"38","3":"19.4","4":"Middle East & Africa","5":"4.8"},
+      {"0":"2015","1":"Xiaomi","2":"25","3":"10.0","4":"North America","5":"2.9"},
+      {"0":"2015","1":"Xiaomi","2":"40","3":"16.0","4":"Europe","5":"1.8"},
+      {"0":"2015","1":"Xiaomi","2":"85","3":"34.0","4":"Asia","5":"3.5"},
+      {"0":"2015","1":"Xiaomi","2":"18","3":"7.2","4":"Latin America","5":"3.3"},
+      {"0":"2015","1":"Xiaomi","2":"28","3":"11.2","4":"Middle East & Africa","5":"3.5"},
+      {"0":"2016","1":"Apple","2":"78","3":"64.0","4":"North America","5":"8.9"},
+      {"0":"2016","1":"Apple","2":"135","3":"121.2","4":"Europe","5":"5.1"},
+      {"0":"2016","1":"Apple","2":"305","3":"262.6","4":"Asia","5":"12.0"},
+      {"0":"2016","1":"Apple","2":"36","3":"31.2","4":"Latin America","5":"7.8"},
+      {"0":"2016","1":"Apple","2":"56","3":"48.5","4":"Middle East & Africa","5":"6.0"},
+      {"0":"2016","1":"Samsung","2":"150","3":"107.2","4":"North America","5":"17.1"},
+      {"0":"2016","1":"Samsung","2":"240","3":"171.4","4":"Europe","5":"10.7"},
+      {"0":"2016","1":"Samsung","2":"510","3":"364.2","4":"Asia","5":"20.0"},
+      {"0":"2016","1":"Samsung","2":"100","3":"71.4","4":"Latin America","5":"18.5"},
+      {"0":"2016","1":"Samsung","2":"160","3":"114.2","4":"Middle East & Africa","5":"19.5"},
+      {"0":"2016","1":"Huawei","2":"40","3":"20.4","4":"North America","5":"4.6"},
+      {"0":"2016","1":"Huawei","2":"60","3":"30.6","4":"Europe","5":"2.9"},
+      {"0":"2016","1":"Huawei","2":"130","3":"66.3","4":"Asia","5":"5.1"},
+      {"0":"2016","1":"Huawei","2":"30","3":"15.3","4":"Latin America","5":"5.2"},
+      {"0":"2016","1":"Huawei","2":"45","3":"22.9","4":"Middle East & Africa","5":"5.5"},
+      {"0":"2016","1":"Xiaomi","2":"30","3":"12.0","4":"North America","5":"3.4"},
+      {"0":"2016","1":"Xiaomi","2":"50","3":"20.0","4":"Europe","5":"2.4"},
+      {"0":"2016","1":"Xiaomi","2":"100","3":"40.0","4":"Asia","5":"3.9"},
+      {"0":"2016","1":"Xiaomi","2":"20","3":"8.0","4":"Latin America","5":"3.5"},
+      {"0":"2016","1":"Xiaomi","2":"35","3":"14.0","4":"Middle East & Africa","5":"4.0"},
+      {"0":"2017","1":"Apple","2":"80","3":"65.6","4":"North America","5":"8.7"},
+      {"0":"2017","1":"Apple","2":"140","3":"125.7","4":"Europe","5":"5.0"},
+      {"0":"2017","1":"Apple","2":"310","3":"267.0","4":"Asia","5":"11.8"},
+      {"0":"2017","1":"Apple","2":"38","3":"32.9","4":"Latin America","5":"7.5"},
+      {"0":"2017","1":"Apple","2":"58","3":"50.2","4":"Middle East & Africa","5":"5.8"},
+      {"0":"2017","1":"Samsung","2":"145","3":"103.6","4":"North America","5":"16.5"},
+      {"0":"2017","1":"Samsung","2":"235","3":"167.8","4":"Europe","5":"10.5"},
+      {"0":"2017","1":"Samsung","2":"500","3":"357.2","4":"Asia","5":"19.5"},
+      {"0":"2017","1":"Samsung","2":"95","3":"67.8","4":"Latin America","5":"17.8"},
+      {"0":"2017","1":"Samsung","2":"155","3":"110.7","4":"Middle East & Africa","5":"18.8"},
+      {"0":"2017","1":"Huawei","2":"50","3":"25.5","4":"North America","5":"5.4"},
+      {"0":"2017","1":"Huawei","2":"70","3":"35.7","4":"Europe","5":"3.2"},
+      {"0":"2017","1":"Huawei","2":"150","3":"76.5","4":"Asia","5":"5.8"},
+      {"0":"2017","1":"Huawei","2":"35","3":"17.8","4":"Latin America","5":"5.8"},
+      {"0":"2017","1":"Huawei","2":"50","3":"25.5","4":"Middle East & Africa","5":"6.0"},
+      {"0":"2017","1":"Xiaomi","2":"40","3":"16.0","4":"North America","5":"4.3"},
+      {"0":"2017","1":"Xiaomi","2":"60","3":"24.0","4":"Europe","5":"2.8"},
+      {"0":"2017","1":"Xiaomi","2":"120","3":"48.0","4":"Asia","5":"4.6"},
+      {"0":"2017","1":"Xiaomi","2":"25","3":"10.0","4":"Latin America","5":"4.0"},
+      {"0":"2017","1":"Xiaomi","2":"40","3":"16.0","4":"Middle East & Africa","5":"4.5"},
+      {"0":"2018","1":"Apple","2":"82","3":"67.3","4":"North America","5":"8.5"},
+      {"0":"2018","1":"Apple","2":"142","3":"127.5","4":"Europe","5":"4.8"},
+      {"0":"2018","1":"Apple","2":"315","3":"271.3","4":"Asia","5":"11.5"},
+      {"0":"2018","1":"Apple","2":"40","3":"34.6","4":"Latin America","5":"7.2"},
+      {"0":"2018","1":"Apple","2":"60","3":"51.9","4":"Middle East & Africa","5":"5.5"},
+      {"0":"2018","1":"Samsung","2":"140","3":"100.0","4":"North America","5":"15.8"},
+      {"0":"2018","1":"Samsung","2":"230","3":"164.2","4":"Europe","5":"10.2"},
+      {"0":"2018","1":"Samsung","2":"490","3":"350.0","4":"Asia","5":"19.0"},
+      {"0":"2018","1":"Samsung","2":"90","3":"64.2","4":"Latin America","5":"17.0"},
+      {"0":"2018","1":"Samsung","2":"150","3":"107.1","4":"Middle East & Africa","5":"18.0"},
+      {"0":"2018","1":"Huawei","2":"60","3":"30.6","4":"North America","5":"6.5"},
+      {"0":"2018","1":"Huawei","2":"80","3":"40.8","4":"Europe","5":"3.6"},
+      {"0":"2018","1":"Huawei","2":"170","3":"86.7","4":"Asia","5":"6.5"},
+      {"0":"2018","1":"Huawei","2":"40","3":"20.4","4":"Latin America","5":"6.5"},
+      {"0":"2018","1":"Huawei","2":"60","3":"30.6","4":"Middle East & Africa","5":"7.0"},
+      {"0":"2018","1":"Xiaomi","2":"50","3":"20.0","4":"North America","5":"5.4"},
+      {"0":"2018","1":"Xiaomi","2":"70","3":"28.0","4":"Europe","5":"3.2"},
+      {"0":"2018","1":"Xiaomi","2":"140","3":"56.0","4":"Asia","5":"5.4"},
+      {"0":"2018","1":"Xiaomi","2":"30","3":"12.0","4":"Latin America","5":"4.8"},
+      {"0":"2018","1":"Xiaomi","2":"50","3":"20.0","4":"Middle East & Africa","5":"5.5"},
+      {"0":"2019","1":"Apple","2":"85","3":"69.8","4":"North America","5":"8.3"},
+      {"0":"2019","1":"Apple","2":"145","3":"130.2","4":"Europe","5":"4.6"},
+      {"0":"2019","1":"Apple","2":"320","3":"275.6","4":"Asia","5":"11.2"},
+      {"0":"2019","1":"Apple","2":"42","3":"36.3","4":"Latin America","5":"6.9"},
+      {"0":"2019","1":"Apple","2":"62","3":"53.6","4":"Middle East & Africa","5":"5.2"},
+      {"0":"2019","1":"Samsung","2":"135","3":"96.4","4":"North America","5":"15.0"},
+      {"0":"2019","1":"Samsung","2":"225","3":"160.7","4":"Europe","5":"9.8"},
+      {"0":"2019","1":"Samsung","2":"480","3":"342.8","4":"Asia","5":"18.5"},
+      {"0":"2019","1":"Samsung","2":"85","3":"60.7","4":"Latin America","5":"16.2"},
+      {"0":"2019","1":"Samsung","2":"145","3":"103.5","4":"Middle East & Africa","5":"17.0"},
+      {"0":"2019","1":"Huawei","2":"70","3":"35.7","4":"North America","5":"7.6"},
+      {"0":"2019","1":"Huawei","2":"90","3":"45.9","4":"Europe","5":"4.0"},
+      {"0":"2019","1":"Huawei","2":"190","3":"96.9","4":"Asia","5":"7.3"},
+      {"0":"2019","1":"Huawei","2":"45","3":"22.9","4":"Latin America","5":"7.3"},
+      {"0":"2019","1":"Huawei","2":"70","3":"35.7","4":"Middle East & Africa","5":"8.0"},
+      {"0":"2019","1":"Xiaomi","2":"60","3":"24.0","4":"North America","5":"6.5"},
+      {"0":"2019","1":"Xiaomi","2":"80","3":"32.0","4":"Europe","5":"3.6"},
+      {"0":"2019","1":"Xiaomi","2":"160","3":"64.0","4":"Asia","5":"6.2"},
+      {"0":"2019","1":"Xiaomi","2":"35","3":"14.0","4":"Latin America","5":"5.6"},
+      {"0":"2019","1":"Xiaomi","2":"60","3":"24.0","4":"Middle East & Africa","5":"6.5"},
+      {"0":"2020","1":"Apple","2":"90","3":"73.9","4":"North America","5":"8.0"},
+      {"0":"2020","1":"Apple","2":"150","3":"134.7","4":"Europe","5":"4.5"},
+      {"0":"2020","1":"Apple","2":"330","3":"284.2","4":"Asia","5":"10.8"},
+      {"0":"2020","1":"Apple","2":"45","3":"38.9","4":"Latin America","5":"6.5"},
+      {"0":"2020","1":"Apple","2":"65","3":"56.2","4":"Middle East & Africa","5":"4.9"},
+      {"0":"2020","1":"Samsung","2":"130","3":"92.8","4":"North America","5":"14.2"},
+      {"0":"2020","1":"Samsung","2":"220","3":"157.1","4":"Europe","5":"9.5"},
+      {"0":"2020","1":"Samsung","2":"470","3":"335.7","4":"Asia","5":"18.0"},
+      {"0":"2020","1":"Samsung","2":"80","3":"57.1","4":"Latin America","5":"15.5"},
+      {"0":"2020","1":"Samsung","2":"140","3":"100.0","4":"Middle East & Africa","5":"16.0"},
+      {"0":"2020","1":"Huawei","2":"80","3":"40.8","4":"North America","5":"8.7"},
+      {"0":"2020","1":"Huawei","2":"100","3":"51.0","4":"Europe","5":"4.3"},
+      {"0":"2020","1":"Huawei","2":"210","3":"107.1","4":"Asia","5":"8.1"},
+      {"0":"2020","1":"Huawei","2":"50","3":"25.5","4":"Latin America","5":"8.1"},
+      {"0":"2020","1":"Huawei","2":"80","3":"40.8","4":"Middle East & Africa","5":"9.0"},
+      {"0":"2020","1":"Xiaomi","2":"70","3":"28.0","4":"North America","5":"7.6"},
+      {"0":"2020","1":"Xiaomi","2":"90","3":"36.0","4":"Europe","5":"4.0"},
+      {"0":"2020","1":"Xiaomi","2":"180","3":"72.0","4":"Asia","5":"6.9"},
+      {"0":"2020","1":"Xiaomi","2":"40","3":"16.0","4":"Latin America","5":"6.4"},
+      {"0":"2020","1":"Xiaomi","2":"70","3":"28.0","4":"Middle East & Africa","5":"7.5"},
+      {"0":"2021","1":"Apple","2":"95","3":"78.0","4":"North America","5":"7.7"},
+      {"0":"2021","1":"Apple","2":"155","3":"139.2","4":"Europe","5":"4.3"},
+      {"0":"2021","1":"Apple","2":"340","3":"292.8","4":"Asia","5":"10.5"},
+      {"0":"2021","1":"Apple","2":"48","3":"41.5","4":"Latin America","5":"6.2"},
+      {"0":"2021","1":"Apple","2":"68","3":"58.8","4":"Middle East & Africa","5":"4.6"},
+      {"0":"2021","1":"Samsung","2":"125","3":"89.2","4":"North America","5":"13.5"},
+      {"0":"2021","1":"Samsung","2":"215","3":"153.5","4":"Europe","5":"9.2"},
+      {"0":"2021","1":"Samsung","2":"460","3":"328.5","4":"Asia","5":"17.5"},
+      {"0":"2021","1":"Samsung","2":"75","3":"53.5","4":"Latin America","5":"14.8"},
+      {"0":"2021","1":"Samsung","2":"135","3":"96.4","4":"Middle East & Africa","5":"15.0"},
+      {"0":"2021","1":"Huawei","2":"70","3":"35.7","4":"North America","5":"7.6"},
+      {"0":"2021","1":"Huawei","2":"90","3":"45.9","4":"Europe","5":"3.8"},
+      {"0":"2021","1":"Huawei","2":"190","3":"96.9","4":"Asia","5":"7.3"},
+      {"0":"2021","1":"Huawei","2":"45","3":"22.9","4":"Latin America","5":"7.3"},
+      {"0":"2021","1":"Huawei","2":"70","3":"35.7","4":"Middle East & Africa","5":"8.0"},
+      {"0":"2021","1":"Xiaomi","2":"80","3":"32.0","4":"North America","5":"8.7"},
+      {"0":"2021","1":"Xiaomi","2":"100","3":"40.0","4":"Europe","5":"4.3"},
+      {"0":"2021","1":"Xiaomi","2":"200","3":"80.0","4":"Asia","5":"7.7"},
+      {"0":"2021","1":"Xiaomi","2":"45","3":"18.0","4":"Latin America","5":"7.2"},
+      {"0":"2021","1":"Xiaomi","2":"80","3":"32.0","4":"Middle East & Africa","5":"8.5"},
+      {"0":"2022","1":"Apple","2":"100","3":"82.1","4":"North America","5":"7.5"},
+      {"0":"2022","1":"Apple","2":"160","3":"143.7","4":"Europe","5":"4.1"},
+      {"0":"2022","1":"Apple","2":"350","3":"301.4","4":"Asia","5":"10.2"},
+      {"0":"2022","1":"Apple","2":"50","3":"43.3","4":"Latin America","5":"6.0"},
+      {"0":"2022","1":"Apple","2":"70","3":"60.5","4":"Middle East & Africa","5":"4.4"},
+      {"0":"2022","1":"Samsung","2":"120","3":"85.7","4":"North America","5":"12.8"},
+      {"0":"2022","1":"Samsung","2":"210","3":"150.0","4":"Europe","5":"8.9"},
+      {"0":"2022","1":"Samsung","2":"450","3":"321.4","4":"Asia","5":"17.0"},
+      {"0":"2022","1":"Samsung","2":"70","3":"50.0","4":"Latin America","5":"14.0"},
+      {"0":"2022","1":"Samsung","2":"130","3":"92.8","4":"Middle East & Africa","5":"14.0"},
+      {"0":"2022","1":"Huawei","2":"60","3":"30.6","4":"North America","5":"6.5"},
+      {"0":"2022","1":"Huawei","2":"80","3":"40.8","4":"Europe","5":"3.4"},
+      {"0":"2022","1":"Huawei","2":"170","3":"86.7","4":"Asia","5":"6.5"},
+      {"0":"2022","1":"Huawei","2":"40","3":"20.4","4":"Latin America","5":"6.5"},
+      {"0":"2022","1":"Huawei","2":"60","3":"30.6","4":"Middle East & Africa","5":"7.0"},
+      {"0":"2022","1":"Xiaomi","2":"90","3":"36.0","4":"North America","5":"9.8"},
+      {"0":"2022","1":"Xiaomi","2":"110","3":"44.0","4":"Europe","5":"4.7"},
+      {"0":"2022","1":"Xiaomi","2":"220","3":"88.0","4":"Asia","5":"8.5"},
+      {"0":"2022","1":"Xiaomi","2":"50","3":"20.0","4":"Latin America","5":"8.0"},
+      {"0":"2022","1":"Xiaomi","2":"90","3":"36.0","4":"Middle East & Africa","5":"9.5"},
+      {"0":"2023","1":"Apple","2":"105","3":"86.2","4":"North America","5":"7.2"},
+      {"0":"2023","1":"Apple","2":"165","3":"148.2","4":"Europe","5":"3.9"},
+      {"0":"2023","1":"Apple","2":"360","3":"309.9","4":"Asia","5":"9.9"},
+      {"0":"2023","1":"Apple","2":"52","3":"45.0","4":"Latin America","5":"5.8"},
+      {"0":"2023","1":"Apple","2":"72","3":"62.2","4":"Middle East & Africa","5":"4.2"},
+      {"0":"2023","1":"Samsung","2":"115","3":"82.1","4":"North America","5":"12.0"},
+      {"0":"2023","1":"Samsung","2":"205","3":"146.4","4":"Europe","5":"8.5"},
+      {"0":"2023","1":"Samsung","2":"440","3":"314.2","4":"Asia","5":"16.5"},
+      {"0":"2023","1":"Samsung","2":"65","3":"46.4","4":"Latin America","5":"13.0"},
+      {"0":"2023","1":"Samsung","2":"125","3":"89.2","4":"Middle East & Africa","5":"13.0"},
+      {"0":"2023","1":"Huawei","2":"50","3":"25.5","4":"North America","5":"5.4"},
+      {"0":"2023","1":"Huawei","2":"70","3":"35.7","4":"Europe","5":"3.0"},
+      {"0":"2023","1":"Huawei","2":"150","3":"76.5","4":"Asia","5":"5.8"},
+      {"0":"2023","1":"Huawei","2":"35","3":"17.8","4":"Latin America","5":"5.8"},
+      {"0":"2023","1":"Huawei","2":"50","3":"25.5","4":"Middle East & Africa","5":"6.0"},
+      {"0":"2023","1":"Xiaomi","2":"100","3":"40.0","4":"North America","5":"10.8"},
+      {"0":"2023","1":"Xiaomi","2":"120","3":"48.0","4":"Europe","5":"5.1"},
+      {"0":"2023","1":"Xiaomi","2":"240","3":"96.0","4":"Asia","5":"9.2"},
+      {"0":"2023","1":"Xiaomi","2":"55","3":"22.0","4":"Latin America","5":"8.8"},
+      {"0":"2023","1":"Xiaomi","2":"100","3":"40.0","4":"Middle East & Africa","5":"10.5"},
+      {"0":"2015","1":"Oppo","2":"15","3":"5.0","4":"North America","5":"1.7"},
+      {"0":"2015","1":"Oppo","2":"20","3":"6.7","4":"Europe","5":"0.9"},
+      {"0":"2015","1":"Oppo","2":"40","3":"13.3","4":"Asia","5":"1.6"},
+      {"0":"2015","1":"Oppo","2":"10","3":"3.3","4":"Latin America","5":"1.8"},
+      {"0":"2015","1":"Oppo","2":"15","3":"5.0","4":"Middle East & Africa","5":"1.9"},
+      {"0":"2016","1":"Oppo","2":"20","3":"6.7","4":"North America","5":"2.3"},
+      {"0":"2016","1":"Oppo","2":"25","3":"8.3","4":"Europe","5":"1.2"},
+      {"0":"2016","1":"Oppo","2":"50","3":"16.7","4":"Asia","5":"2.0"},
+      {"0":"2016","1":"Oppo","2":"12","3":"4.0","4":"Latin America","5":"2.1"},
+      {"0":"2016","1":"Oppo","2":"18","3":"6.0","4":"Middle East & Africa","5":"2.2"},
+      {"0":"2017","1":"Oppo","2":"25","3":"8.3","4":"North America","5":"2.7"},
+      {"0":"2017","1":"Oppo","2":"30","3":"10.0","4":"Europe","5":"1.3"},
+      {"0":"2017","1":"Oppo","2":"60","3":"20.0","4":"Asia","5":"2.3"},
+      {"0":"2017","1":"Oppo","2":"15","3":"5.0","4":"Latin America","5":"2.5"},
+      {"0":"2017","1":"Oppo","2":"20","3":"6.7","4":"Middle East & Africa","5":"2.5"},
+      {"0":"2018","1":"Oppo","2":"30","3":"10.0","4":"North America","5":"3.2"},
+      {"0":"2018","1":"Oppo","2":"35","3":"11.7","4":"Europe","5":"1.6"},
+      {"0":"2018","1":"Oppo","2":"70","3":"23.3","4":"Asia","5":"2.7"},
+      {"0":"2018","1":"Oppo","2":"18","3":"6.0","4":"Latin America","5":"2.9"},
+      {"0":"2018","1":"Oppo","2":"22","3":"7.3","4":"Middle East & Africa","5":"2.8"},
+      {"0":"2019","1":"Oppo","2":"35","3":"11.7","4":"North America","5":"3.8"},
+      {"0":"2019","1":"Oppo","2":"40","3":"13.3","4":"Europe","5":"1.8"},
+      {"0":"2019","1":"Oppo","2":"80","3":"26.7","4":"Asia","5":"3.1"},
+      {"0":"2019","1":"Oppo","2":"20","3":"6.7","4":"Latin America","5":"3.3"},
+      {"0":"2019","1":"Oppo","2":"25","3":"8.3","4":"Middle East & Africa","5":"3.2"},
+      {"0":"2020","1":"Oppo","2":"40","3":"13.3","4":"North America","5":"4.3"},
+      {"0":"2020","1":"Oppo","2":"45","3":"15.0","4":"Europe","5":"2.0"},
+      {"0":"2020","1":"Oppo","2":"90","3":"30.0","4":"Asia","5":"3.5"},
+      {"0":"2020","1":"Oppo","2":"22","3":"7.3","4":"Latin America","5":"3.6"},
+      {"0":"2020","1":"Oppo","2":"28","3":"9.3","4":"Middle East & Africa","5":"3.5"},
+      {"0":"2021","1":"Oppo","2":"45","3":"15.0","4":"North America","5":"4.9"},
+      {"0":"2021","1":"Oppo","2":"50","3":"16.7","4":"Europe","5":"2.2"},
+      {"0":"2021","1":"Oppo","2":"100","3":"33.3","4":"Asia","5":"3.8"},
+      {"0":"2021","1":"Oppo","2":"25","3":"8.3","4":"Latin America","5":"4.0"},
+      {"0":"2021","1":"Oppo","2":"30","3":"10.0","4":"Middle East & Africa","5":"3.8"},
+      {"0":"2022","1":"Oppo","2":"50","3":"16.7","4":"North America","5":"5.4"},
+      {"0":"2022","1":"Oppo","2":"55","3":"18.3","4":"Europe","5":"2.4"},
+      {"0":"2022","1":"Oppo","2":"110","3":"36.7","4":"Asia","5":"4.2"},
+      {"0":"2022","1":"Oppo","2":"28","3":"9.3","4":"Latin America","5":"4.5"},
+      {"0":"2022","1":"Oppo","2":"32","3":"10.7","4":"Middle East & Africa","5":"4.1"},
+      {"0":"2023","1":"Oppo","2":"55","3":"18.3","4":"North America","5":"5.9"},
+      {"0":"2023","1":"Oppo","2":"60","3":"20.0","4":"Europe","5":"2.6"},
+      {"0":"2023","1":"Oppo","2":"120","3":"40.0","4":"Asia","5":"4.6"},
+      {"0":"2023","1":"Oppo","2":"30","3":"10.0","4":"Latin America","5":"4.8"},
+      {"0":"2023","1":"Oppo","2":"35","3":"11.7","4":"Middle East & Africa","5":"4.4"},
+      {"0":"2015","1":"Vivo","2":"10","3":"3.0","4":"North America","5":"1.1"},
+      {"0":"2015","1":"Vivo","2":"15","3":"4.5","4":"Europe","5":"0.7"},
+      {"0":"2015","1":"Vivo","2":"30","3":"9.0","4":"Asia","5":"1.2"},
+      {"0":"2015","1":"Vivo","2":"8","3":"2.4","4":"Latin America","5":"1.5"},
+      {"0":"2015","1":"Vivo","2":"12","3":"3.6","4":"Middle East & Africa","5":"1.5"},
+      {"0":"2016","1":"Vivo","2":"15","3":"4.5","4":"North America","5":"1.7"},
+      {"0":"2016","1":"Vivo","2":"20","3":"6.0","4":"Europe","5":"0.9"},
+      {"0":"2016","1":"Vivo","2":"40","3":"12.0","4":"Asia","5":"1.6"},
+      {"0":"2016","1":"Vivo","2":"10","3":"3.0","4":"Latin America","5":"1.7"},
+      {"0":"2016","1":"Vivo","2":"15","3":"4.5","4":"Middle East & Africa","5":"1.8"},
+      {"0":"2017","1":"Vivo","2":"20","3":"6.0","4":"North America","5":"2.2"},
+      {"0":"2017","1":"Vivo","2":"25","3":"7.5","4":"Europe","5":"1.1"},
+      {"0":"2017","1":"Vivo","2":"50","3":"15.0","4":"Asia","5":"1.9"},
+      {"0":"2017","1":"Vivo","2":"12","3":"3.6","4":"Latin America","5":"2.0"},
+      {"0":"2017","1":"Vivo","2":"18","3":"5.4","4":"Middle East & Africa","5":"2.2"},
+      {"0":"2018","1":"Vivo","2":"25","3":"7.5","4":"North America","5":"2.7"},
+      {"0":"2018","1":"Vivo","2":"30","3":"9.0","4":"Europe","5":"1.3"},
+      {"0":"2018","1":"Vivo","2":"60","3":"18.0","4":"Asia","5":"2.3"},
+      {"0":"2018","1":"Vivo","2":"15","3":"4.5","4":"Latin America","5":"2.4"},
+      {"0":"2018","1":"Vivo","2":"20","3":"6.0","4":"Middle East & Africa","5":"2.5"},
+      {"0":"2019","1":"Vivo","2":"30","3":"9.0","4":"North America","5":"3.3"},
+      {"0":"2019","1":"Vivo","2":"35","3":"10.5","4":"Europe","5":"1.5"},
+      {"0":"2019","1":"Vivo","2":"70","3":"21.0","4":"Asia","5":"2.7"},
+      {"0":"2019","1":"Vivo","2":"18","3":"5.4","4":"Latin America","5":"2.8"},
+      {"0":"2019","1":"Vivo","2":"22","3":"6.6","4":"Middle East & Africa","5":"2.8"},
+      {"0":"2020","1":"Vivo","2":"35","3":"10.5","4":"North America","5":"3.8"},
+      {"0":"2020","1":"Vivo","2":"40","3":"12.0","4":"Europe","5":"1.7"},
+      {"0":"2020","1":"Vivo","2":"80","3":"24.0","4":"Asia","5":"3.1"},
+      {"0":"2020","1":"Vivo","2":"20","3":"6.0","4":"Latin America","5":"3.2"},
+      {"0":"2020","1":"Vivo","2":"25","3":"7.5","4":"Middle East & Africa","5":"3.2"},
+      {"0":"2021","1":"Vivo","2":"40","3":"12.0","4":"North America","5":"4.3"},
+      {"0":"2021","1":"Vivo","2":"45","3":"13.5","4":"Europe","5":"1.9"},
+      {"0":"2021","1":"Vivo","2":"90","3":"27.0","4":"Asia","5":"3.5"},
+      {"0":"2021","1":"Vivo","2":"22","3":"6.6","4":"Latin America","5":"3.5"},
+      {"0":"2021","1":"Vivo","2":"28","3":"8.4","4":"Middle East & Africa","5":"3.5"},
+      {"0":"2022","1":"Vivo","2":"45","3":"13.5","4":"North America","5":"4.9"},
+      {"0":"2022","1":"Vivo","2":"50","3":"15.0","4":"Europe","5":"2.1"},
+      {"0":"2022","1":"Vivo","2":"100","3":"30.0","4":"Asia","5":"3.8"},
+      {"0":"2022","1":"Vivo","2":"25","3":"7.5","4":"Latin America","5":"4.0"},
+      {"0":"2022","1":"Vivo","2":"30","3":"9.0","4":"Middle East & Africa","5":"3.8"},
+      {"0":"2023","1":"Vivo","2":"50","3":"15.0","4":"North America","5":"5.4"},
+      {"0":"2023","1":"Vivo","2":"55","3":"16.5","4":"Europe","5":"2.3"},
+      {"0":"2023","1":"Vivo","2":"110","3":"33.0","4":"Asia","5":"4.2"},
+      {"0":"2023","1":"Vivo","2":"28","3":"8.4","4":"Latin America","5":"4.5"},
+      {"0":"2023","1":"Vivo","2":"32","3":"9.6","4":"Middle East & Africa","5":"4.1"},
+      {"0":"2015","1":"OnePlus","2":"5","3":"2.0","4":"North America","5":"0.6"},
+      {"0":"2015","1":"OnePlus","2":"8","3":"3.2","4":"Europe","5":"0.4"},
+      {"0":"2015","1":"OnePlus","2":"15","3":"6.0","4":"Asia","5":"0.6"},
+      {"0":"2015","1":"OnePlus","2":"3","3":"1.2","4":"Latin America","5":"0.5"},
+      {"0":"2015","1":"OnePlus","2":"5","3":"2.0","4":"Middle East & Africa","5":"0.6"},
+      {"0":"2016","1":"OnePlus","2":"8","3":"3.2","4":"North America","5":"0.9"},
+      {"0":"2016","1":"OnePlus","2":"10","3":"4.0","4":"Europe","5":"0.5"},
+      {"0":"2016","1":"OnePlus","2":"20","3":"8.0","4":"Asia","5":"0.8"},
+      {"0":"2016","1":"OnePlus","2":"4","3":"1.6","4":"Latin America","5":"0.7"},
+      {"0":"2016","1":"OnePlus","2":"6","3":"2.4","4":"Middle East & Africa","5":"0.7"},
+      {"0":"2017","1":"OnePlus","2":"10","3":"4.0","4":"North America","5":"1.1"},
+      {"0":"2017","1":"OnePlus","2":"12","3":"4.8","4":"Europe","5":"0.5"},
+      {"0":"2017","1":"OnePlus","2":"25","3":"10.0","4":"Asia","5":"1.0"},
+      {"0":"2017","1":"OnePlus","2":"5","3":"2.0","4":"Latin America","5":"0.8"},
+      {"0":"2017","1":"OnePlus","2":"8","3":"3.2","4":"Middle East & Africa","5":"0.9"},
+      {"0":"2018","1":"OnePlus","2":"12","3":"4.8","4":"North America","5":"1.3"},
+      {"0":"2018","1":"OnePlus","2":"15","3":"6.0","4":"Europe","5":"0.7"},
+      {"0":"2018","1":"OnePlus","2":"30","3":"12.0","4":"Asia","5":"1.2"},
+      {"0":"2018","1":"OnePlus","2":"6","3":"2.4","4":"Latin America","5":"1.0"},
+      {"0":"2018","1":"OnePlus","2":"10","3":"4.0","4":"Middle East & Africa","5":"1.1"},
+      {"0":"2019","1":"OnePlus","2":"15","3":"6.0","4":"North America","5":"1.6"},
+      {"0":"2019","1":"OnePlus","2":"18","3":"7.2","4":"Europe","5":"0.8"},
+      {"0":"2019","1":"OnePlus","2":"35","3":"14.0","4":"Asia","5":"1.4"},
+      {"0":"2019","1":"OnePlus","2":"8","3":"3.2","4":"Latin America","5":"1.3"},
+      {"0":"2019","1":"OnePlus","2":"12","3":"4.8","4":"Middle East & Africa","5":"1.3"},
+      {"0":"2020","1":"OnePlus","2":"18","3":"7.2","4":"North America","5":"1.9"},
+      {"0":"2020","1":"OnePlus","2":"20","3":"8.0","4":"Europe","5":"0.9"},
+      {"0":"2020","1":"OnePlus","2":"40","3":"16.0","4":"Asia","5":"1.5"},
+      {"0":"2020","1":"OnePlus","2":"10","3":"4.0","4":"Latin America","5":"1.6"},
+      {"0":"2020","1":"OnePlus","2":"15","3":"6.0","4":"Middle East & Africa","5":"1.6"},
+      {"0":"2021","1":"OnePlus","2":"20","3":"8.0","4":"North America","5":"2.2"},
+      {"0":"2021","1":"OnePlus","2":"22","3":"8.8","4":"Europe","5":"1.0"},
+      {"0":"2021","1":"OnePlus","2":"45","3":"18.0","4":"Asia","5":"1.7"},
+      {"0":"2021","1":"OnePlus","2":"12","3":"4.8","4":"Latin America","5":"1.9"},
+      {"0":"2021","1":"OnePlus","2":"18","3":"7.2","4":"Middle East & Africa","5":"1.9"},
+      {"0":"2022","1":"OnePlus","2":"22","3":"8.8","4":"North America","5":"2.4"},
+      {"0":"2022","1":"OnePlus","2":"25","3":"10.0","4":"Europe","5":"1.1"},
+      {"0":"2022","1":"OnePlus","2":"50","3":"20.0","4":"Asia","5":"1.9"},
+      {"0":"2022","1":"OnePlus","2":"14","3":"5.6","4":"Latin America","5":"2.2"},
+      {"0":"2022","1":"OnePlus","2":"20","3":"8.0","4":"Middle East & Africa","5":"2.1"},
+      {"0":"2023","1":"OnePlus","2":"25","3":"10.0","4":"North America","5":"2.7"},
+      {"0":"2023","1":"OnePlus","2":"28","3":"11.2","4":"Europe","5":"1.2"},
+      {"0":"2023","1":"OnePlus","2":"55","3":"22.0","4":"Asia","5":"2.1"},
+      {"0":"2023","1":"OnePlus","2":"16","3":"6.4","4":"Latin America","5":"2.6"},
+      {"0":"2023","1":"OnePlus","2":"22","3":"8.8","4":"Middle East & Africa","5":"2.3"},
+      {"0":"2015","1":"Realme","2":"2","3":"0.6","4":"North America","5":"0.2"},
+      {"0":"2015","1":"Realme","2":"3","3":"0.9","4":"Europe","5":"0.1"},
+      {"0":"2015","1":"Realme","2":"5","3":"1.5","4":"Asia","5":"0.2"},
+      {"0":"2015","1":"Realme","2":"1","3":"0.3","4":"Latin America","5":"0.2"},
+      {"0":"2015","1":"Realme","2":"2","3":"0.6","4":"Middle East & Africa","5":"0.2"},
+      {"0":"2016","1":"Realme","2":"3","3":"0.9","4":"North America","5":"0.3"},
+      {"0":"2016","1":"Realme","2":"4","3":"1.2","4":"Europe","5":"0.2"},
+      {"0":"2016","1":"Realme","2":"8","3":"2.4","4":"Asia","5":"0.3"},
+      {"0":"2016","1":"Realme","2":"2","3":"0.6","4":"Latin America","5":"0.3"},
+      {"0":"2016","1":"Realme","2":"3","3":"0.9","4":"Middle East & Africa","5":"0.3"},
+      {"0":"2017","1":"Realme","2":"4","3":"1.2","4":"North America","5":"0.4"},
+      {"0":"2017","1":"Realme","2":"5","3":"1.5","4":"Europe","5":"0.2"},
+      {"0":"2017","1":"Realme","2":"10","3":"3.0","4":"Asia","5":"0.4"},
+      {"0":"2017","1":"Realme","2":"3","3":"0.9","4":"Latin America","5":"0.5"},
+      {"0":"2017","1":"Realme","2":"4","3":"1.2","4":"Middle East & Africa","5":"0.5"},
+      {"0":"2018","1":"Realme","2":"5","3":"1.5","4":"North America","5":"0.5"},
+      {"0":"2018","1":"Realme","2":"6","3":"1.8","4":"Europe","5":"0.3"},
+      {"0":"2018","1":"Realme","2":"12","3":"3.6","4":"Asia","5":"0.5"},
+      {"0":"2018","1":"Realme","2":"4","3":"1.2","4":"Latin America","5":"0.6"},
+      {"0":"2018","1":"Realme","2":"5","3":"1.5","4":"Middle East & Africa","5":"0.6"},
+      {"0":"2019","1":"Realme","2":"6","3":"1.8","4":"North America","5":"0.6"},
+      {"0":"2019","1":"Realme","2":"8","3":"2.4","4":"Europe","5":"0.3"},
+      {"0":"2019","1":"Realme","2":"15","3":"4.5","4":"Asia","5":"0.6"},
+      {"0":"2019","1":"Realme","2":"5","3":"1.5","4":"Latin America","5":"0.8"},
+      {"0":"2019","1":"Realme","2":"6","3":"1.8","4":"Middle East & Africa","5":"0.6"},
+      {"0":"2020","1":"Realme","2":"8","3":"2.4","4":"North America","5":"0.9"},
+      {"0":"2020","1":"Realme","2":"10","3":"3.0","4":"Europe","5":"0.4"},
+      {"0":"2020","1":"Realme","2":"20","3":"6.0","4":"Asia","5":"0.8"},
+      {"0":"2020","1":"Realme","2":"6","3":"1.8","4":"Latin America","5":"1.0"},
+      {"0":"2020","1":"Realme","2":"8","3":"2.4","4":"Middle East & Africa","5":"0.9"},
+      {"0":"2021","1":"Realme","2":"10","3":"3.0","4":"North America","5":"1.1"},
+      {"0":"2021","1":"Realme","2":"12","3":"3.6","4":"Europe","5":"0.5"},
+      {"0":"2021","1":"Realme","2":"25","3":"7.5","4":"Asia","5":"1.0"},
+      {"0":"2021","1":"Realme","2":"8","3":"2.4","4":"Latin America","5":"1.3"},
+      {"0":"2021","1":"Realme","2":"10","3":"3.0","4":"Middle East & Africa","5":"1.1"},
+      {"0":"2022","1":"Realme","2":"12","3":"3.6","4":"North America","5":"1.3"},
+      {"0":"2022","1":"Realme","2":"15","3":"4.5","4":"Europe","5":"0.6"},
+      {"0":"2022","1":"Realme","2":"30","3":"9.0","4":"Asia","5":"1.2"},
+      {"0":"2022","1":"Realme","2":"10","3":"3.0","4":"Latin America","5":"1.6"},
+      {"0":"2022","1":"Realme","2":"12","3":"3.6","4":"Middle East & Africa","5":"1.3"},
+      {"0":"2023","1":"Realme","2":"15","3":"4.5","4":"North America","5":"1.6"},
+      {"0":"2023","1":"Realme","2":"18","3":"5.4","4":"Europe","5":"0.8"},
+      {"0":"2023","1":"Realme","2":"35","3":"10.5","4":"Asia","5":"1.4"},
+      {"0":"2023","1":"Realme","2":"12","3":"3.6","4":"Latin America","5":"1.9"},
+      {"0":"2023","1":"Realme","2":"15","3":"4.5","4":"Middle East & Africa","5":"1.6"},
+      {"0":"2015","1":"Other","2":"100","3":"50.0","4":"North America","5":"11.7"},
+      {"0":"2015","1":"Other","2":"150","3":"75.0","4":"Europe","5":"6.7"},
+      {"0":"2015","1":"Other","2":"300","3":"150.0","4":"Asia","5":"12.3"},
+      {"0":"2015","1":"Other","2":"60","3":"30.0","4":"Latin America","5":"11.0"},
+      {"0":"2015","1":"Other","2":"90","3":"45.0","4":"Middle East & Africa","5":"11.4"},
+      {"0":"2016","1":"Other","2":"95","3":"47.5","4":"North America","5":"10.8"},
+      {"0":"2016","1":"Other","2":"145","3":"72.5","4":"Europe","5":"6.5"},
+      {"0":"2016","1":"Other","2":"290","3":"145.0","4":"Asia","5":"11.4"},
+      {"0":"2016","1":"Other","2":"55","3":"27.5","4":"Latin America","5":"9.6"},
+      {"0":"2016","1":"Other","2":"85","3":"42.5","4":"Middle East & Africa","5":"10.4"},
+      {"0":"2017","1":"Other","2":"90","3":"45.0","4":"North America","5":"9.8"},
+      {"0":"2017","1":"Other","2":"140","3":"70.0","4":"Europe","5":"6.2"},
+      {"0":"2017","1":"Other","2":"280","3":"140.0","4":"Asia","5":"10.7"},
+      {"0":"2017","1":"Other","2":"50","3":"25.0","4":"Latin America","5":"8.3"},
+      {"0":"2017","1":"Other","2":"80","3":"40.0","4":"Middle East & Africa","5":"9.5"},
+      {"0":"2018","1":"Other","2":"85","3":"42.5","4":"North America","5":"9.2"},
+      {"0":"2018","1":"Other","2":"135","3":"67.5","4":"Europe","5":"5.9"},
+      {"0":"2018","1":"Other","2":"270","3":"135.0","4":"Asia","5":"10.2"},
+      {"0":"2018","1":"Other","2":"45","3":"22.5","4":"Latin America","5":"7.2"},
+      {"0":"2018","1":"Other","2":"75","3":"37.5","4":"Middle East & Africa","5":"8.7"},
+      {"0":"2019","1":"Other","2":"80","3":"40.0","4":"North America","5":"8.7"},
+      {"0":"2019","1":"Other","2":"130","3":"65.0","4":"Europe","5":"5.7"},
+      {"0":"2019","1":"Other","2":"260","3":"130.0","4":"Asia","5":"9.8"},
+      {"0":"2019","1":"Other","2":"40","3":"20.0","4":"Latin America","5":"6.5"},
+      {"0":"2019","1":"Other","2":"70","3":"35.0","4":"Middle East & Africa","5":"8.0"},
+      {"0":"2020","1":"Other","2":"75","3":"37.5","4":"North America","5":"8.2"},
+      {"0":"2020","1":"Other","2":"125","3":"62.5","4":"Europe","5":"5.5"},
+      {"0":"2020","1":"Other","2":"250","3":"125.0","4":"Asia","5":"9.4"},
+      {"0":"2020","1":"Other","2":"38","3":"19.0","4":"Latin America","5":"6.2"},
+      {"0":"2020","1":"Other","2":"65","3":"32.5","4":"Middle East & Africa","5":"7.5"},
+      {"0":"2021","1":"Other","2":"70","3":"35.0","4":"North America","5":"7.6"},
+      {"0":"2021","1":"Other","2":"120","3":"60.0","4":"Europe","5":"5.3"},
+      {"0":"2021","1":"Other","2":"240","3":"120.0","4":"Asia","5":"9.0"},
+      {"0":"2021","1":"Other","2":"35","3":"17.5","4":"Latin America","5":"5.7"},
+      {"0":"2021","1":"Other","2":"60","3":"30.0","4":"Middle East & Africa","5":"7.0"},
+      {"0":"2022","1":"Other","2":"65","3":"32.5","4":"North America","5":"7.1"},
+      {"0":"2022","1":"Other","2":"115","3":"57.5","4":"Europe","5":"5.0"},
+      {"0":"2022","1":"Other","2":"230","3":"115.0","4":"Asia","5":"8.6"},
+      {"0":"2022","1":"Other","2":"32","3":"16.0","4":"Latin America","5":"5.2"},
+      {"0":"2022","1":"Other","2":"55","3":"27.5","4":"Middle East & Africa","5":"6.5"},
+      {"0":"2023","1":"Other","2":"60","3":"30.0","4":"North America","5":"6.5"},
+      {"0":"2023","1":"Other","2":"110","3":"55.0","4":"Europe","5":"4.8"},
+      {"0":"2023","1":"Other","2":"220","3":"110.0","4":"Asia","5":"8.2"},
+      {"0":"2023","1":"Other","2":"30","3":"15.0","4":"Latin America","5":"4.9"},
+      {"0":"2023","1":"Other","2":"50","3":"25.0","4":"Middle East & Africa","5":"6.0"}
+    ];
+
+    const data = rawData.slice(1).map(d => {
+      try {
+        return {
+          Year: +d['0'],
+          Brand: d['1'],
+          Sales: +d['2'] || 0, // In millions of units
+          Revenue: +d['3'] || 0, // In billions USD
+          Region: d['4'],
+          MarketShare: +d['5'] || 0 // Percentage
+        };
+      } catch (e) {
+        console.error("Error parsing data row:", d, e);
+        return null; // Skip invalid rows
+      }
+    }).filter(d => d !== null);
+
+    // STEP 2: Set up dimensions and scales
+    const margin = {top: 40, right: 40, bottom: 60, left: 60};
+    const chartWidth = 800 - margin.left - margin.right;
+    const chartHeight = 500 - margin.top - margin.bottom;
+
+    // STEP 3: Create SVG
+    const svg = d3.select("#chart-svg")
+      .attr("viewBox", `0 0 ${chartWidth + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    const g = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Helper functions for common chart elements
+    const xAxisGroup = g.append("g").attr("class", "x-axis").attr("transform", `translate(0,${chartHeight})`);
+    const yAxisGroup = g.append("g").attr("class", "y-axis");
+    const xAxisLabel = g.append("text")
+      .attr("class", "x-axis-label")
+      .attr("text-anchor", "middle")
+      .attr("x", chartWidth / 2)
+      .attr("y", chartHeight + margin.bottom - 10)
+      .style("font-size", "0.9rem")
+      .attr("fill", "#555");
+    const yAxisLabel = g.append("text")
+      .attr("class", "y-axis-label")
+      .attr("text-anchor", "middle")
+      .attr("transform", `rotate(-90)`)
+      .attr("y", -margin.left + 20)
+      .attr("x", -chartHeight / 2)
+      .style("font-size", "0.9rem")
+      .attr("fill", "#555");
+    const title = svg.append("text")
+      .attr("class", "chart-title")
+      .attr("x", (chartWidth + margin.left + margin.right) / 2)
+      .attr("y", margin.top / 2)
+      .attr("text-anchor", "middle")
+      .style("font-size", "1.2rem")
+      .style("font-weight", "bold")
+      .attr("fill", "#333");
+
+    // Tooltip
+    const tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0)
+      .style("position", "absolute")
+      .style("visibility", "hidden");
+
+    // STEP 4: Initialize first chart
+    function initChart() {
+      try {
+        const totalSalesByYear = d3.rollups(data, v => d3.sum(v, d => d.Sales), d => d.Year)
+          .map(([year, sales]) => ({Year: year, Sales: sales}))
+          .sort((a, b) => a.Year - b.Year);
+
+        const xScale = d3.scaleBand()
+          .domain(totalSalesByYear.map(d => d.Year))
+          .range([0, chartWidth])
+          .padding(0.1);
+
+        const yScale = d3.scaleLinear()
+          .domain([0, d3.max(totalSalesByYear, d => d.Sales) * 1.1])
+          .range([chartHeight, 0]);
+
+        xAxisGroup.call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
+          .selectAll("text")
+          .attr("transform", "rotate(-45)")
+          .style("text-anchor", "end");
+        yAxisGroup.call(d3.axisLeft(yScale));
+        xAxisLabel.text("Year");
+        yAxisLabel.text("Total Sales (Millions Units)");
+        title.text("Total Global Smartphone Sales by Year");
+
+        g.selectAll(".bar").data(totalSalesByYear, d => d.Year)
+          .join("rect")
+          .attr("class", "bar")
+          .attr("x", d => xScale(d.Year))
+          .attr("y", d => yScale(d.Sales))
+          .attr("width", xScale.bandwidth())
+          .attr("height", d => chartHeight - yScale(d.Sales))
+          .attr("fill", "steelblue")
+          .on("mouseover", function(event, d) {
+            tooltip.html(`Year: ${d.Year}<br>Sales: ${d.Sales.toLocaleString()}M`)
+              .style("visibility", "visible")
+              .style("opacity", 1);
+          })
+          .on("mousemove", function(event) {
+            tooltip.style("top", (event.pageY - 10) + "px")
+              .style("left", (event.pageX + 10) + "px");
+          })
+          .on("mouseout", function() {
+            tooltip.style("visibility", "hidden").style("opacity", 0);
+          });
+
+        g.selectAll(".line-path, .area-path, .dot, .scatter-point")
+          .transition().duration(0)
+          .style("opacity", 0).remove(); // Clear other chart elements
+      } catch (e) {
+        console.error("Error in initChart:", e);
+      }
+    }
+
+    // STEP 5: Step update functions
+    const stepFunctions = {
+      0: () => {
+        try {
+          const totalSalesByYear = d3.rollups(data, v => d3.sum(v, d => d.Sales), d => d.Year)
+            .map(([year, sales]) => ({Year: year, Sales: sales}))
+            .sort((a, b) => a.Year - b.Year);
+
+          const xScale = d3.scaleBand()
+            .domain(totalSalesByYear.map(d => d.Year))
+            .range([0, chartWidth])
+            .padding(0.1);
+
+          const yScale = d3.scaleLinear()
+            .domain([0, d3.max(totalSalesByYear, d => d.Sales) * 1.1])
+            .range([chartHeight, 0]);
+
+          xAxisGroup.transition().duration(750)
+            .call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+          xAxisLabel.text("Year");
+          yAxisLabel.text("Total Sales (Millions Units)");
+          title.text("Total Global Smartphone Sales by Year (2015-2023)");
+
+          g.selectAll(".line-path, .area-path, .dot, .scatter-point, .legend")
+            .transition().duration(500).style("opacity", 0).remove();
+
+          g.selectAll(".bar").data(totalSalesByYear, d => d.Year)
+            .join(
+              enter => enter.append("rect")
+                .attr("class", "bar")
+                .attr("x", d => xScale(d.Year))
+                .attr("y", chartHeight)
+                .attr("width", xScale.bandwidth())
+                .attr("height", 0)
+                .attr("fill", "steelblue")
+                .call(enter => enter.transition().duration(750)
+                  .attr("y", d => yScale(d.Sales))
+                  .attr("height", d => chartHeight - yScale(d.Sales))),
+              update => update.transition().duration(750)
+                .attr("x", d => xScale(d.Year))
+                .attr("y", d => yScale(d.Sales))
+                .attr("width", xScale.bandwidth())
+                .attr("height", d => chartHeight - yScale(d.Sales))
+                .attr("fill", "steelblue"),
+              exit => exit.transition().duration(750).attr("height", 0).attr("y", chartHeight).remove()
+            )
+            .on("mouseover", function(event, d) {
+              tooltip.html(`Year: ${d.Year}<br>Sales: ${d.Sales.toLocaleString()}M`)
+                .style("visibility", "visible")
+                .style("opacity", 1);
+            })
+            .on("mousemove", function(event) {
+              tooltip.style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+              tooltip.style("visibility", "hidden").style("opacity", 0);
+            });
+        } catch (e) {
+          console.error("Error in step 0:", e);
+        }
+      },
+      1: () => {
+        try {
+          const totalSalesByBrand = d3.rollups(data, v => d3.sum(v, d => d.Sales), d => d.Brand)
+            .map(([brand, sales]) => ({Brand: brand, Sales: sales}))
+            .sort((a, b) => b.Sales - a.Sales);
+
+          const xScale = d3.scaleBand()
+            .domain(totalSalesByBrand.map(d => d.Brand))
+            .range([0, chartWidth])
+            .padding(0.1);
+
+          const yScale = d3.scaleLinear()
+            .domain([0, d3.max(totalSalesByBrand, d => d.Sales) * 1.1])
+            .range([chartHeight, 0]);
+
+          xAxisGroup.transition().duration(750)
+            .call(d3.axisBottom(xScale))
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+          xAxisLabel.text("Brand");
+          yAxisLabel.text("Total Sales (Millions Units)");
+          title.text("Total Smartphone Sales by Brand (2015-2023)");
+
+          g.selectAll(".bar").data(totalSalesByBrand, d => d.Brand)
+            .join(
+              enter => enter.append("rect")
+                .attr("class", "bar")
+                .attr("x", d => xScale(d.Brand))
+                .attr("y", chartHeight)
+                .attr("width", xScale.bandwidth())
+                .attr("height", 0)
+                .attr("fill", "#1f77b4")
+                .call(enter => enter.transition().duration(750)
+                  .attr("y", d => yScale(d.Sales))
+                  .attr("height", d => chartHeight - yScale(d.Sales))),
+              update => update.transition().duration(750)
+                .attr("x", d => xScale(d.Brand))
+                .attr("y", d => yScale(d.Sales))
+                .attr("width", xScale.bandwidth())
+                .attr("height", d => chartHeight - yScale(d.Sales))
+                .attr("fill", "#1f77b4"),
+              exit => exit.transition().duration(750).attr("height", 0).attr("y", chartHeight).remove()
+            )
+            .on("mouseover", function(event, d) {
+              tooltip.html(`Brand: ${d.Brand}<br>Sales: ${d.Sales.toLocaleString()}M`)
+                .style("visibility", "visible")
+                .style("opacity", 1);
+            })
+            .on("mousemove", function(event) {
+              tooltip.style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+              tooltip.style("visibility", "hidden").style("opacity", 0);
+            });
+        } catch (e) {
+          console.error("Error in step 1:", e);
+        }
+      },
+      2: () => {
+        try {
+          const totalSalesByRegion = d3.rollups(data, v => d3.sum(v, d => d.Sales), d => d.Region)
+            .map(([region, sales]) => ({Region: region, Sales: sales}))
+            .sort((a, b) => b.Sales - a.Sales);
+
+          const xScale = d3.scaleBand()
+            .domain(totalSalesByRegion.map(d => d.Region))
+            .range([0, chartWidth])
+            .padding(0.1);
+
+          const yScale = d3.scaleLinear()
+            .domain([0, d3.max(totalSalesByRegion, d => d.Sales) * 1.1])
+            .range([chartHeight, 0]);
+
+          xAxisGroup.transition().duration(750)
+            .call(d3.axisBottom(xScale))
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+          xAxisLabel.text("Region");
+          yAxisLabel.text("Total Sales (Millions Units)");
+          title.text("Total Smartphone Sales by Region (2015-2023)");
+
+          g.selectAll(".bar").data(totalSalesByRegion, d => d.Region)
+            .join(
+              enter => enter.append("rect")
+                .attr("class", "bar")
+                .attr("x", d => xScale(d.Region))
+                .attr("y", chartHeight)
+                .attr("width", xScale.bandwidth())
+                .attr("height", 0)
+                .attr("fill", "#2ca02c")
+                .call(enter => enter.transition().duration(750)
+                  .attr("y", d => yScale(d.Sales))
+                  .attr("height", d => chartHeight - yScale(d.Sales))),
+              update => update.transition().duration(750)
+                .attr("x", d => xScale(d.Region))
+                .attr("y", d => yScale(d.Sales))
+                .attr("width", xScale.bandwidth())
+                .attr("height", d => chartHeight - yScale(d.Sales))
+                .attr("fill", "#2ca02c"),
+              exit => exit.transition().duration(750).attr("height", 0).attr("y", chartHeight).remove()
+            )
+            .on("mouseover", function(event, d) {
+              tooltip.html(`Region: ${d.Region}<br>Sales: ${d.Sales.toLocaleString()}M`)
+                .style("visibility", "visible")
+                .style("opacity", 1);
+            })
+            .on("mousemove", function(event) {
+              tooltip.style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+              tooltip.style("visibility", "hidden").style("opacity", 0);
+            });
+        } catch (e) {
+          console.error("Error in step 2:", e);
+        }
+      },
+      3: () => {
+        try {
+          const peakSalesByBrand = d3.rollups(data, 
+              (v) => d3.max(v, d => d.Sales), 
+              d => d.Brand
+            )
+            .map(([brand, maxSales]) => {
+              const yearData = data.filter(d => d.Brand === brand && d.Sales === maxSales);
+              return {Brand: brand, Sales: maxSales, Year: yearData.length > 0 ? yearData[0].Year : 'N/A'};
+            })
+            .sort((a, b) => b.Sales - a.Sales);
+
+          const xScale = d3.scaleBand()
+            .domain(peakSalesByBrand.map(d => d.Brand))
+            .range([0, chartWidth])
+            .padding(0.1);
+
+          const yScale = d3.scaleLinear()
+            .domain([0, d3.max(peakSalesByBrand, d => d.Sales) * 1.1])
+            .range([chartHeight, 0]);
+
+          xAxisGroup.transition().duration(750)
+            .call(d3.axisBottom(xScale))
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+          xAxisLabel.text("Brand");
+          yAxisLabel.text("Peak Sales (Millions Units)");
+          title.text("Peak Annual Sales for Each Brand (2015-2023)");
+
+          g.selectAll(".bar").data(peakSalesByBrand, d => d.Brand)
+            .join(
+              enter => enter.append("rect")
+                .attr("class", "bar")
+                .attr("x", d => xScale(d.Brand))
+                .attr("y", chartHeight)
+                .attr("width", xScale.bandwidth())
+                .attr("height", 0)
+                .attr("fill", "#9467bd")
+                .call(enter => enter.transition().duration(750)
+                  .attr("y", d => yScale(d.Sales))
+                  .attr("height", d => chartHeight - yScale(d.Sales))),
+              update => update.transition().duration(750)
+                .attr("x", d => xScale(d.Brand))
+                .attr("y", d => yScale(d.Sales))
+                .attr("width", xScale.bandwidth())
+                .attr("height", d => chartHeight - yScale(d.Sales))
+                .attr("fill", "#9467bd"),
+              exit => exit.transition().duration(750).attr("height", 0).attr("y", chartHeight).remove()
+            )
+            .on("mouseover", function(event, d) {
+              tooltip.html(`Brand: ${d.Brand}<br>Peak Sales: ${d.Sales.toLocaleString()}M<br>Year: ${d.Year}`)
+                .style("visibility", "visible")
+                .style("opacity", 1);
+            })
+            .on("mousemove", function(event) {
+              tooltip.style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+              tooltip.style("visibility", "hidden").style("opacity", 0);
+            });
+        } catch (e) {
+          console.error("Error in step 3:", e);
+        }
+      },
+      4: () => {
+        try {
+          g.selectAll(".bar, .scatter-point").transition().duration(500).style("opacity", 0).remove();
+
+          const brandData = data.filter(d => d.Brand === 'Apple');
+          const marketShareByYear = d3.rollups(brandData, v => d3.mean(v, d => d.MarketShare), d => d.Year)
+            .map(([year, marketShare]) => ({Year: year, MarketShare: marketShare}))
+            .sort((a, b) => a.Year - b.Year);
+
+          const xScale = d3.scaleLinear()
+            .domain(d3.extent(marketShareByYear, d => d.Year))
+            .range([0, chartWidth]);
+
+          const yScale = d3.scaleLinear()
+            .domain([0, d3.max(marketShareByYear, d => d.MarketShare) * 1.1])
+            .range([chartHeight, 0]);
+
+          xAxisGroup.transition().duration(750)
+            .call(d3.axisBottom(xScale).tickFormat(d3.format("d")).ticks(d3.timeYear.every(1)))
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale).tickFormat(d => `${d}%`));
+          xAxisLabel.text("Year");
+          yAxisLabel.text("Market Share (%)");
+          title.text("Apple's Global Market Share Over Time (2015-2023)");
+
+          const line = d3.line()
+            .x(d => xScale(d.Year))
+            .y(d => yScale(d.MarketShare));
+
+          const area = d3.area()
+            .x(d => xScale(d.Year))
+            .y0(chartHeight)
+            .y1(d => yScale(d.MarketShare));
+
+          g.selectAll(".area-path").data([marketShareByYear])
+            .join(
+              enter => enter.append("path")
+                .attr("class", "area-path")
+                .attr("fill", "steelblue")
+                .attr("fill-opacity", 0.3)
+                .attr("d", area)
+                .call(enter => enter.transition().duration(750).style("opacity", 1)),
+              update => update.transition().duration(750)
+                .attr("d", area)
+                .attr("fill", "steelblue"),
+              exit => exit.transition().duration(750).style("opacity", 0).remove()
+            );
+
+          g.selectAll(".line-path").data([marketShareByYear])
+            .join(
+              enter => enter.append("path")
+                .attr("class", "line-path")
+                .attr("stroke", "steelblue")
+                .attr("stroke-width", 3)
+                .attr("fill", "none")
+                .attr("d", line)
+                .call(enter => enter.transition().duration(750).style("opacity", 1)),
+              update => update.transition().duration(750)
+                .attr("d", line)
+                .attr("stroke", "steelblue"),
+              exit => exit.transition().duration(750).style("opacity", 0).remove()
+            );
+
+          g.selectAll(".dot").data(marketShareByYear, d => d.Year)
+            .join(
+              enter => enter.append("circle")
+                .attr("class", "dot")
+                .attr("cx", d => xScale(d.Year))
+                .attr("cy", d => yScale(d.MarketShare))
+                .attr("r", 0)
+                .attr("fill", "steelblue")
+                .call(enter => enter.transition().duration(750).attr("r", 5)),
+              update => update.transition().duration(750)
+                .attr("cx", d => xScale(d.Year))
+                .attr("cy", d => yScale(d.MarketShare))
+                .attr("r", 5)
+                .attr("fill", "steelblue"),
+              exit => exit.transition().duration(750).attr("r", 0).remove()
+            )
+            .on("mouseover", function(event, d) {
+              tooltip.html(`Year: ${d.Year}<br>Market Share: ${d.MarketShare.toFixed(1)}%`)
+                .style("visibility", "visible")
+                .style("opacity", 1);
+            })
+            .on("mousemove", function(event) {
+              tooltip.style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+              tooltip.style("visibility", "hidden").style("opacity", 0);
+            });
+
+        } catch (e) {
+          console.error("Error in step 4:", e);
+        }
+      },
+      5: () => {
+        try {
+          const brandsToShow = ['Apple', 'Samsung'];
+          const multiBrandData = brandsToShow.map(brandName => ({
+            brand: brandName,
+            values: d3.rollups(data.filter(d => d.Brand === brandName), v => d3.mean(v, d => d.MarketShare), d => d.Year)
+              .map(([year, marketShare]) => ({Year: year, MarketShare: marketShare}))
+              .sort((a, b) => a.Year - b.Year)
+          }));
+
+          const allYears = Array.from(new Set(data.map(d => d.Year))).sort((a,b) => a-b);
+          const maxMarketShare = d3.max(multiBrandData, b => d3.max(b.values, d => d.MarketShare));
+
+          const xScale = d3.scaleLinear()
+            .domain(d3.extent(allYears))
+            .range([0, chartWidth]);
+
+          const yScale = d3.scaleLinear()
+            .domain([0, maxMarketShare * 1.1])
+            .range([chartHeight, 0]);
+
+          const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+            .domain(brandsToShow);
+
+          xAxisGroup.transition().duration(750)
+            .call(d3.axisBottom(xScale).tickFormat(d3.format("d")).ticks(d3.timeYear.every(1)))
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale).tickFormat(d => `${d}%`));
+          xAxisLabel.text("Year");
+          yAxisLabel.text("Market Share (%)");
+          title.text("Market Share: Apple vs. Samsung (2015-2023)");
+
+          const line = d3.line()
+            .x(d => xScale(d.Year))
+            .y(d => yScale(d.MarketShare));
+
+          const area = d3.area()
+            .x(d => xScale(d.Year))
+            .y0(chartHeight)
+            .y1(d => yScale(d.MarketShare));
+
+          g.selectAll(".area-path").data(multiBrandData, d => d.brand)
+            .join(
+              enter => enter.append("path")
+                .attr("class", "area-path")
+                .attr("fill", d => colorScale(d.brand))
+                .attr("fill-opacity", 0)
+                .attr("d", d => area(d.values))
+                .call(enter => enter.transition().duration(750).attr("fill-opacity", 0.3)),
+              update => update.transition().duration(750)
+                .attr("d", d => area(d.values))
+                .attr("fill", d => colorScale(d.brand))
+                .attr("fill-opacity", 0.3),
+              exit => exit.transition().duration(750).attr("fill-opacity", 0).remove()
+            );
+
+          g.selectAll(".line-path").data(multiBrandData, d => d.brand)
+            .join(
+              enter => enter.append("path")
+                .attr("class", "line-path")
+                .attr("stroke", d => colorScale(d.brand))
+                .attr("stroke-width", 3)
+                .attr("fill", "none")
+                .attr("d", d => line(d.values))
+                .call(enter => enter.transition().duration(750).style("opacity", 1)),
+              update => update.transition().duration(750)
+                .attr("d", d => line(d.values))
+                .attr("stroke", d => colorScale(d.brand)),
+              exit => exit.transition().duration(750).style("opacity", 0).remove()
+            );
+
+          g.selectAll(".dot").data(multiBrandData.flatMap(b => b.values.map(v => ({...v, brand: b.brand}))), d => `${d.brand}-${d.Year}`)
+            .join(
+              enter => enter.append("circle")
+                .attr("class", "dot")
+                .attr("cx", d => xScale(d.Year))
+                .attr("cy", d => yScale(d.MarketShare))
+                .attr("r", 0)
+                .attr("fill", d => colorScale(d.brand))
+                .call(enter => enter.transition().duration(750).attr("r", 5)),
+              update => update.transition().duration(750)
+                .attr("cx", d => xScale(d.Year))
+                .attr("cy", d => yScale(d.MarketShare))
+                .attr("r", 5)
+                .attr("fill", d => colorScale(d.brand)),
+              exit => exit.transition().duration(750).attr("r", 0).remove()
+            )
+            .on("mouseover", function(event, d) {
+              tooltip.html(`Brand: ${d.brand}<br>Year: ${d.Year}<br>Market Share: ${d.MarketShare.toFixed(1)}%`)
+                .style("visibility", "visible")
+                .style("opacity", 1);
+            })
+            .on("mousemove", function(event) {
+              tooltip.style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+              tooltip.style("visibility", "hidden").style("opacity", 0);
+            });
+
+        } catch (e) {
+          console.error("Error in step 5:", e);
+        }
+      },
+      6: () => {
+        try {
+          const brandsToShow = ['Apple', 'Samsung', 'Huawei', 'Xiaomi'];
+          const multiBrandData = brandsToShow.map(brandName => ({
+            brand: brandName,
+            values: d3.rollups(data.filter(d => d.Brand === brandName), v => d3.mean(v, d => d.MarketShare), d => d.Year)
+              .map(([year, marketShare]) => ({Year: year, MarketShare: marketShare}))
+              .sort((a, b) => a.Year - b.Year)
+          }));
+
+          const allYears = Array.from(new Set(data.map(d => d.Year))).sort((a,b) => a-b);
+          const maxMarketShare = d3.max(multiBrandData, b => d3.max(b.values, d => d.MarketShare));
+
+          const xScale = d3.scaleLinear()
+            .domain(d3.extent(allYears))
+            .range([0, chartWidth]);
+
+          const yScale = d3.scaleLinear()
+            .domain([0, maxMarketShare * 1.1])
+            .range([chartHeight, 0]);
+
+          const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+            .domain(brandsToShow);
+
+          xAxisGroup.transition().duration(750)
+            .call(d3.axisBottom(xScale).tickFormat(d3.format("d")).ticks(d3.timeYear.every(1)))
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale).tickFormat(d => `${d}%`));
+          xAxisLabel.text("Year");
+          yAxisLabel.text("Market Share (%)");
+          title.text("Market Share Trends: Key Brands (2015-2023)");
+
+          const line = d3.line()
+            .x(d => xScale(d.Year))
+            .y(d => yScale(d.MarketShare));
+
+          const area = d3.area()
+            .x(d => xScale(d.Year))
+            .y0(chartHeight)
+            .y1(d => yScale(d.MarketShare));
+
+          g.selectAll(".area-path").data(multiBrandData, d => d.brand)
+            .join(
+              enter => enter.append("path")
+                .attr("class", "area-path")
+                .attr("fill", d => colorScale(d.brand))
+                .attr("fill-opacity", 0)
+                .attr("d", d => area(d.values))
+                .call(enter => enter.transition().duration(750).attr("fill-opacity", 0.1)),
+              update => update.transition().duration(750)
+                .attr("d", d => area(d.values))
+                .attr("fill", d => colorScale(d.brand))
+                .attr("fill-opacity", 0.1),
+              exit => exit.transition().duration(750).attr("fill-opacity", 0).remove()
+            );
+
+          g.selectAll(".line-path").data(multiBrandData, d => d.brand)
+            .join(
+              enter => enter.append("path")
+                .attr("class", "line-path")
+                .attr("stroke", d => colorScale(d.brand))
+                .attr("stroke-width", 3)
+                .attr("fill", "none")
+                .attr("d", d => line(d.values))
+                .call(enter => enter.transition().duration(750).style("opacity", 1)),
+              update => update.transition().duration(750)
+                .attr("d", d => line(d.values))
+                .attr("stroke", d => colorScale(d.brand)),
+              exit => exit.transition().duration(750).style("opacity", 0).remove()
+            );
+
+          g.selectAll(".dot").data(multiBrandData.flatMap(b => b.values.map(v => ({...v, brand: b.brand}))), d => `${d.brand}-${d.Year}`)
+            .join(
+              enter => enter.append("circle")
+                .attr("class", "dot")
+                .attr("cx", d => xScale(d.Year))
+                .attr("cy", d => yScale(d.MarketShare))
+                .attr("r", 0)
+                .attr("fill", d => colorScale(d.brand))
+                .call(enter => enter.transition().duration(750).attr("r", 5)),
+              update => update.transition().duration(750)
+                .attr("cx", d => xScale(d.Year))
+                .attr("cy", d => yScale(d.MarketShare))
+                .attr("r", 5)
+                .attr("fill", d => colorScale(d.brand)),
+              exit => exit.transition().duration(750).attr("r", 0).remove()
+            )
+            .on("mouseover", function(event, d) {
+              tooltip.html(`Brand: ${d.brand}<br>Year: ${d.Year}<br>Market Share: ${d.MarketShare.toFixed(1)}%`)
+                .style("visibility", "visible")
+                .style("opacity", 1);
+            })
+            .on("mousemove", function(event) {
+              tooltip.style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+              tooltip.style("visibility", "hidden").style("opacity", 0);
+            });
+
+        } catch (e) {
+          console.error("Error in step 6:", e);
+        }
+      },
+      7: () => {
+        try {
+          g.selectAll(".bar, .line-path, .area-path, .dot, .legend").transition().duration(500).style("opacity", 0).remove();
+
+          const xScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.Sales) * 1.1])
+            .range([0, chartWidth]);
+
+          const yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.Revenue) * 1.1])
+            .range([chartHeight, 0]);
+
+          xAxisGroup.transition().duration(750)
+            .call(d3.axisBottom(xScale));
+          yAxisGroup.transition().duration(750)
+            .call(d3.axisLeft(yScale));
+          xAxisLabel.text("Sales (Millions Units)");
+          yAxisLabel.text("Revenue (Billions USD)");
+          title.text("Sales vs. Revenue: Global Snapshot (2015-2023)");
+
+          g.selectAll(".scatter-point").data(data)
+            .join(
+              enter => enter.append("circle")
+                .attr("class", "scatter-point")
+                .attr("cx", d => xScale(d.Sales))
+                .attr("cy", d => yScale(d.Revenue))
+                .attr("r", 0)
+                .attr("fill", "#ff7f0e")
+                .attr("fill-opacity", 0.6)
+                .call(enter => enter.transition().duration(750).attr("r", 5)),
+              update => update.transition().duration(750)
+                .attr("cx", d => xScale(d.Sales))
+                .attr("cy", d => yScale(d.Revenue))
+                .attr("r", 5)
+                .attr("fill", "#ff7f0e"),
+              exit => exit.transition().duration(750).attr("r", 0).remove()
+            )
+            .on("mouseover", function(event, d) {
+              tooltip.html(`Brand: ${d.Brand}<br>Year: ${d.Year}<br>Region: ${d.Region}<br>Sales: ${d.Sales.toLocaleString()}M<br>Revenue: $${d.Revenue.toLocaleString()}B`)
+                .style("visibility", "visible")
+                .style("opacity", 1);
+            })
+            .on("mousemove", function(event) {
+              tooltip.style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+              tooltip.style("visibility", "hidden").style("opacity", 0);
+            });
+        } catch (e) {
+          console.error("Error in step 7:", e);
+        }
+      },
+      8: () => {
+        try {
+          const brands = Array.from(new Set(data.map(d => d.Brand)));
+          const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+            .domain(brands);
+
+          const xScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.Sales) * 1.1])
+            .range([0, chartWidth]);
+
+          const yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.Revenue) * 1.1])
+            .range([chartHeight, 0]);
+
+          xAxisGroup.transition().duration(750)
+            .call(d3.axisBottom(xScale));
+          yAxisGroup.transition().duration(750)
+            .call(d3.axisLeft(yScale));
+          xAxisLabel.text("Sales (Millions Units)");
+          yAxisLabel.text("Revenue (Billions USD)");
+          title.text("Sales vs. Revenue by Brand (2015-2023)");
+
+          g.selectAll(".scatter-point").data(data, d => `${d.Brand}-${d.Year}-${d.Region}`)
+            .join(
+              enter => enter.append("circle")
+                .attr("class", "scatter-point")
+                .attr("cx", d => xScale(d.Sales))
+                .attr("cy", d => yScale(d.Revenue))
+                .attr("r", 0)
+                .attr("fill", d => colorScale(d.Brand))
+                .attr("fill-opacity", 0.6)
+                .call(enter => enter.transition().duration(750).attr("r", 5)),
+              update => update.transition().duration(750)
+                .attr("cx", d => xScale(d.Sales))
+                .attr("cy", d => yScale(d.Revenue))
+                .attr("r", 5)
+                .attr("fill", d => colorScale(d.Brand)),
+              exit => exit.transition().duration(750).attr("r", 0).remove()
+            )
+            .on("mouseover", function(event, d) {
+              tooltip.html(`Brand: ${d.Brand}<br>Year: ${d.Year}<br>Region: ${d.Region}<br>Sales: ${d.Sales.toLocaleString()}M<br>Revenue: $${d.Revenue.toLocaleString()}B`)
+                .style("visibility", "visible")
+                .style("opacity", 1);
+            })
+            .on("mousemove", function(event) {
+              tooltip.style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+              tooltip.style("visibility", "hidden").style("opacity", 0);
+            });
+        } catch (e) {
+          console.error("Error in step 8:", e);
+        }
+      },
+      9: () => {
+        try {
+          const regions = Array.from(new Set(data.map(d => d.Region)));
+          const colorScale = d3.scaleOrdinal(d3.schemePaired)
+            .domain(regions);
+
+          const xScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.Sales) * 1.1])
+            .range([0, chartWidth]);
+
+          const yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.Revenue) * 1.1])
+            .range([chartHeight, 0]);
+
+          xAxisGroup.transition().duration(750)
+            .call(d3.axisBottom(xScale));
+          yAxisGroup.transition().duration(750)
+            .call(d3.axisLeft(yScale));
+          xAxisLabel.text("Sales (Millions Units)");
+          yAxisLabel.text("Revenue (Billions USD)");
+          title.text("Sales vs. Revenue by Region (2015-2023)");
+
+          g.selectAll(".scatter-point").data(data, d => `${d.Brand}-${d.Year}-${d.Region}`)
+            .join(
+              enter => enter.append("circle")
+                .attr("class", "scatter-point")
+                .attr("cx", d => xScale(d.Sales))
+                .attr("cy", d => yScale(d.Revenue))
+                .attr("r", 0)
+                .attr("fill", d => colorScale(d.Region))
+                .attr("fill-opacity", 0.6)
+                .call(enter => enter.transition().duration(750).attr("r", 5)),
+              update => update.transition().duration(750)
+                .attr("cx", d => xScale(d.Sales))
+                .attr("cy", d => yScale(d.Revenue))
+                .attr("r", 5)
+                .attr("fill", d => colorScale(d.Region)),
+              exit => exit.transition().duration(750).attr("r", 0).remove()
+            )
+            .on("mouseover", function(event, d) {
+              tooltip.html(`Brand: ${d.Brand}<br>Year: ${d.Year}<br>Region: ${d.Region}<br>Sales: ${d.Sales.toLocaleString()}M<br>Revenue: $${d.Revenue.toLocaleString()}B`)
+                .style("visibility", "visible")
+                .style("opacity", 1);
+            })
+            .on("mousemove", function(event) {
+              tooltip.style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+              tooltip.style("visibility", "hidden").style("opacity", 0);
+            });
+        } catch (e) {
+          console.error("Error in step 9:", e);
+        }
+      }
+    };
+
+    // STEP 6: Scrollama setup
+    const scroller = scrollama();
+
+    scroller
+      .setup({
+        step: '.step',
+        offset: 0.5,
+        debug: false
+      })
+      .onStepEnter(handleStepEnter)
+      .onStepExit(handleStepExit);
+
+    function handleStepEnter(response) {
+      const stepIndex = parseInt(d3.select(response.element).attr("data-step"));
+      console.log(`Step ${stepIndex} entered`);
+      if (stepFunctions[stepIndex]) {
+        stepFunctions[stepIndex]();
+      }
+    }
+
+    // Optional: handleStepExit can be used to reset or fade out elements
+    function handleStepExit(response) {
+        // For this example, we'll let the enter function handle transitions.
+        // If you want to reset things when scrolling *up* past a step, you'd use response.direction === 'up'
+        // For transitions to previous steps, the next step's enter function will handle the cleanup.
+    }
+
+    // STEP 7: Initialize on load
+    window.addEventListener('load', () => {
+      initChart();
+      // Force a resize to ensure Scrollama calculates positions correctly
+      scroller.resize();
+    });
+
+    window.addEventListener('resize', () => {
+      // Re-initialize chart on resize to handle responsive adjustments
+      // This is a simple approach, for more complex responsive charts, you might recalculate scales/positions
+      // and re-render current step's chart.
+      const currentStep = d3.select(".step.is-active").attr("data-step");
+      if (currentStep !== null) {
+        stepFunctions[parseInt(currentStep)]();
+      } else {
+        initChart(); // If no step is active, show the initial chart
+      }
+      scroller.resize();
+    });
+  </script>
+</body>
 </html>

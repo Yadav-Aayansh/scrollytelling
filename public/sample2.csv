@@ -1,0 +1,85 @@
+Title,Duration in timestamp
+100 Days of Deep Learning | Course Announcement,18:32
+What is Deep Learning? Deep Learning Vs Machine Learning | Complete Deep Learning Course,1:06:58
+Types of Neural Networks | History of Deep Learning | Applications of Deep Learning,33:16
+What is a Perceptron? Perceptron Vs Neuron | Perceptron Geometric Intuition,38:34
+Perceptron Trick | How to train a Perceptron | Perceptron Part 2 |  Deep Learning Full Course,51:45
+Perceptron Loss Function | Hinge Loss | Binary Cross Entropy | Sigmoid Function,59:13
+Problem with Perceptron,7:39
+MLP Notation,13:24
+Multi Layer Perceptron | MLP Intuition,37:46
+Forward Propagation | How a neural network predicts output?,15:31
+Customer Churn Prediction using ANN | Keras and Tensorflow | Deep Learning Classification,35:23
+Handwritten Digit Classification using ANN | MNIST Dataset,28:40
+Graduate Admission Prediction using ANN,17:43
+Loss Functions in Deep Learning | Deep Learning | CampusX,59:56
+Backpropagation in Deep Learning | Part 1 | The What?,54:19
+Backpropagation Part 2 | The How | Complete Deep Learning Playlist,59:56
+Backpropagation Part 3 | The Why | Complete Deep Learning Playlist,40:21
+MLP Memoization | Complete Deep Learning Playlist,25:24
+Gradient Descent in Neural Networks | Batch vs Stochastics vs Mini Batch Gradient Descent,37:53
+Vanishing Gradient Problem in ANN | Exploding Gradient Problem | Code Example,32:16
+How to Improve the Performance of a Neural Network,30:24
+Early Stopping In Neural Networks | End to End Deep Learning Course,12:00
+Data Scaling in Neural Network | Feature Scaling in ANN | End to End Deep Learning Course,16:55
+Dropout Layer in Deep Learning | Dropouts in ANN | End to End Deep Learning,27:51
+Dropout Layers in ANN | Code Example | Regression | Classification,19:17
+Regularization in Deep Learning | L2 Regularization in ANN | L1 Regularization | Weight Decay in ANN,35:57
+"Activation Functions in Deep Learning | Sigmoid, Tanh and Relu Activation Function",44:52
+Relu Variants Explained | Leaky Relu | Parametric Relu | Elu | Selu | Activation Functions Part 2,33:25
+Weight Initialization Techniques | What not to do? | Deep Learning,49:24
+Xavier/Glorat And He Weight Initialization in Deep Learning,21:07
+Batch Normalization in Deep Learning | Batch Learning in Keras,43:39
+Optimizers in Deep Learning | Part 1 | Complete Deep Learning Course,22:34
+Exponentially Weighted Moving Average or Exponential Weighted Average | Deep Learning,18:51
+SGD with Momentum Explained in Detail with Animations | Optimizers in Deep Learning Part 2,38:25
+Nesterov Accelerated Gradient (NAG) Explained in Detail | Animations | Optimizers in Deep Learning,27:50
+AdaGrad Explained in Detail with Animations | Optimizers in Deep Learning Part 4,26:29
+RMSProp Explained in Detail with Animations | Optimizers in Deep Learning Part 5,12:38
+Adam Optimizer Explained in Detail with Animations | Optimizers in Deep Learning Part 5,12:39
+Keras Tuner | Hyperparameter Tuning a Neural Network,1:05:34
+What is Convolutional Neural Network (CNN) | CNN Intution,27:10
+CNN Vs Visual Cortex | The Famous Cat Experiment | History of CNN,15:02
+CNN Part 3 | Convolution Operation,29:14
+Padding & Strides in CNN | CNN Lecture 4 | Deep Learning,24:26
+Pooling Layer in CNN | MaxPooling in Convolutional Neural Network,27:54
+CNN Architecture | LeNet -5 Architecture,20:00
+Comparing CNN Vs ANN  | CampusX,17:42
+Backpropagation in CNN | Part 1 | Deep Learning,36:21
+"CNN Backpropagation Part 2 | How Backpropagation works on Convolution, Maxpooling and Flatten Layers",43:27
+Cat Vs Dog Image Classification Project | Deep Learning Project | CNN Project,27:29
+Data Augmentation in Deep Learning | CNN,26:49
+Pretrained models in CNN | ImageNET Dataset | ILSVRC | Keras Code,24:28
+What does a CNN see? | Visualizing CNN Filters and Feature Maps | CampusX,13:03
+What is Transfer Learning? Transfer Learning in Keras | Fine Tuning Vs Feature Extraction,33:53
+Keras Functional Model | How to build non-linear Neural Networks?,25:38
+Why RNNs are needed | RNNs Vs ANNs | RNN Part 1,30:19
+Recurrent Neural Network | Forward Propagation | Architecture,41:44
+RNN Sentiment Analysis | RNN Code Example in Keras | CampusX,36:57
+Types of RNN | Many to Many | One to Many | Many to One RNNs,22:20
+How Backpropagation works in RNN | Backpropagation Through Time,33:58
+Problems with RNN | 100 Days of Deep Learning,32:18
+LSTM | Long Short Term Memory | Part 1 | The What? | CampusX,42:18
+LSTM Architecture | Part 2 | The How? | CampusX,1:10:13
+LSTM | Part 3 | Next Word Predictor Using | CampusX,1:00:05
+Gated Recurrent Unit | Deep Learning | GRU | CampusX,1:26:22
+Deep RNNs | Stacked RNNs | Stacked LSTMs | Stacked GRUs | CampusX,45:08
+Bidirectional RNN | BiLSTM | Bidirectional LSTM | Bidirectional GRU,25:41
+The Epic History of Large Language Models (LLMs) | From LSTMs to ChatGPT | CampusX,1:27:06
+Encoder Decoder | Sequence-to-Sequence Architecture | Deep Learning | CampusX,1:13:42
+Attention Mechanism in 1 video | Seq2Seq Networks | Encoder Decoder Architecture,41:24
+Bahdanau Attention Vs Luong Attention,52:33
+Introduction to Transformers | Transformers Part 1,1:00:05
+What is Self Attention | Transformers Part 2 | CampusX,23:21
+Self Attention in Transformers | Deep Learning | Simple Explanation with Code!,1:23:24
+Scaled Dot Product Attention | Why do we scale Self Attention?,50:42
+Self Attention Geometric Intuition | How to Visualize Self Attention | CampusX,20:52
+"Why is Self Attention called ""Self""? | Self Attention Vs Luong Attention in Depth Lecture | CampusX",22:35
+What is Multi-head Attention in Transformers | Multi-head Attention v Self Attention | Deep Learning,38:27
+Positional Encoding in Transformers | Deep Learning | CampusX,1:13:15
+Layer Normalization in Transformers | Layer Norm Vs Batch Norm,46:57
+Transformer Architecture | Part 1 Encoder Architecture | CampusX,54:58
+Masked Self Attention | Masked Multi-head Attention in Transformer | Transformer Decoder,1:00:54
+Cross Attention in Transformers | 100 Days Of Deep Learning | CampusX,34:07
+Transformer Decoder Architecture | Deep Learning | CampusX,48:26
+Transformer Inference | How Inference is done in Transformer? | Deep Learning | CampusX,45:12
