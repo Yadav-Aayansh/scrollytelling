@@ -1,13 +1,864 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Complete CSV to Scrollytelling Web App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Learning Course Duration Analysis</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/scrollama"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333;}
+    
+    .scrollytelling-container {
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+      background-color: #f9f9f9;
+    }
+    
+    .steps-container {
+      flex: 1;
+      padding-right: 2rem;
+    }
+    
+    .step {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem;
+      border-bottom: 1px solid #eee;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .step:last-child {
+      border-bottom: none;
+    }
+
+    .step h3 {
+      font-size: 1.8em;
+      margin-bottom: 1rem;
+      color: #0056b3;
+    }
+
+    .step p {
+      font-size: 1.1em;
+      color: #555;
+      max-width: 600px;
+    }
+    
+    .chart-container {
+      flex: 1;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border-left: 1px solid #eee;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+    }
+    
+    #chart-svg {
+      max-width: 100%;
+      max-height: 90vh;
+      display: block; /* Ensure no extra space below SVG */
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      shape-rendering: crispEdges;
+    }
+
+    .axis text {
+      font-size: 0.9em;
+      fill: #555;
+    }
+
+    .bar {
+      fill: steelblue;
+      opacity: 0.9;
+    }
+
+    .line {
+      fill: none;
+      stroke: #ff7f0e;
+      stroke-width: 3px;
+    }
+
+    .area {
+      fill: #ff7f0e;
+      opacity: 0.2;
+    }
+
+    .dot {
+      fill: #2ca02c;
+      opacity: 0.8;
+    }
+
+    .tooltip {
+      position: absolute;
+      text-align: center;
+      width: auto;
+      height: auto;
+      padding: 8px;
+      font: 12px sans-serif;
+      background: lightsteelblue;
+      border: 0px;
+      border-radius: 8px;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .label {
+      font-size: 1em;
+      fill: #333;
+      text-anchor: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="scrollytelling-container">
+    <div class="steps-container">
+      <div class="step" data-step="0">
+        <h3>Introduction to Course Durations</h3>
+        <p>This visualization explores the duration of videos in the "100 Days of Deep Learning" course. We start by looking at the distribution of video lengths, identifying the shortest and longest sessions. This initial view gives us a broad overview of the course structure.</p>
+      </div>
+      <div class="step" data-step="1">
+        <h3>Shortest Videos Highlighted</h3>
+        <p>Focusing on the shorter videos, we observe that a significant portion of the content is concise, often under 20 minutes. These quick lessons likely cover specific concepts or introductions, making the learning process digestible. For example, some videos are as short as 7-10 minutes.</p>
+      </div>
+      <div class="step" data-step="2">
+        <h3>Longer Deep Dive Sessions</h3>
+        <p>Conversely, some videos extend to over an hour, indicating deep dives into complex topics. These longer sessions are crucial for comprehensive understanding and practical application. We can see several videos exceeding 45 minutes, with some even reaching past 60 minutes.</p>
+      </div>
+      <div class="step" data-step="3">
+        <h3>Average Video Duration</h3>
+        <p>By averaging the durations, we find the typical video length, providing a benchmark for content pacing. The average video duration across the entire course is approximately 35-40 minutes, striking a balance between brevity and depth.</p>
+      </div>
+      <div class="step" data-step="4">
+        <h3>Course Progress: Video Order and Duration</h3>
+        <p>Now, let's examine how video durations change as we progress through the course. This line chart maps each video's duration against its sequential order. Are the videos consistently long, or do they vary significantly?</p>
+      </div>
+      <div class="step" data-step="5">
+        <h3>Identifying Trends in Video Length</h3>
+        <p>This view helps us spot trends. We can observe if introductory videos are shorter, or if complex topics later in the course necessitate longer explanations. There appears to be a fluctuating pattern, with no clear continuous increase or decrease in duration.</p>
+      </div>
+      <div class="step" data-step="6">
+        <h3>Cumulative Duration and Learning Pace</h3>
+        <p>Understanding the cumulative duration helps learners gauge the total time commitment. This area chart shows the total time spent up to each video. By the 80th video, the total learning time approaches 50 hours, highlighting the depth of the course.</p>
+      </div>
+      <div class="step" data-step="7">
+        <h3>Duration Distribution: Categorizing Videos</h3>
+        <p>Finally, we categorize videos into short (under 25 min), medium (25-50 min), and long (over 50 min) segments. This scatter plot helps visualize the proportion of each type, revealing the course's structural diversity.</p>
+      </div>
+      <div class="step" data-step="8">
+        <h3>Short vs. Long Videos</h3>
+        <p>We can clearly see that a large number of videos fall into the 'short' category, making up a substantial portion of the course content. The 'long' videos, while fewer, represent significant time investments.</p>
+      </div>
+      <div class="step" data-step="9">
+        <h3>Overall Course Structure Insights</h3>
+        <p>The course effectively balances quick conceptual introductions with more in-depth explorations. This mixed approach caters to different learning styles and allows for focused study. The distribution indicates a well-paced curriculum, with a majority of videos being digestible, complemented by longer, comprehensive sessions.</p>
+      </div>
+    </div>
+    <div class="chart-container">
+      <svg id="chart-svg"></svg>
+    </div>
+  </div>
+
+  <script>
+    // STEP 1: Parse and validate data
+    const rawData = [
+      {"Title": "100 Days of Deep Learning | Course Announcement", "Duration in timestamp": "18:32"},
+      {"Title": "What is Deep Learning? Deep Learning Vs Machine Learning | Complete Deep Learning Course", "Duration in timestamp": "1:06:58"},
+      {"Title": "Types of Neural Networks | History of Deep Learning | Applications of Deep Learning", "Duration in timestamp": "33:16"},
+      {"Title": "What is a Perceptron? Perceptron Vs Neuron | Perceptron Geometric Intuition", "Duration in timestamp": "38:34"},
+      {"Title": "Perceptron Trick | How to train a Perceptron | Perceptron Part 2 |  Deep Learning Full Course", "Duration in timestamp": "51:45"},
+      {"Title": "Perceptron Loss Function | Hinge Loss | Binary Cross Entropy | Sigmoid Function", "Duration in timestamp": "59:13"},
+      {"Title": "Problem with Perceptron", "Duration in timestamp": "7:39"},
+      {"Title": "MLP Notation", "Duration in timestamp": "15:02"},
+      {"Title": "Multi Layer Perceptron | MLP Intuition", "Duration in timestamp": "39:56"},
+      {"Title": "Multi Layer Perceptron | MLP Part 2 | Activation Functions | Step, Sigmoid, Tanh, ReLU", "Duration in timestamp": "43:08"},
+      {"Title": "MLP Part 3 | How to train a MLP? | Gradient Descent Intuition", "Duration in timestamp": "55:40"},
+      {"Title": "Gradient Descent Algorithm | MLP Part 4", "Duration in timestamp": "45:34"},
+      {"Title": "Types of Gradient Descent | Stochastic Gradient Descent | Mini Batch Gradient Descent", "Duration in timestamp": "42:07"},
+      {"Title": "Cost Functions for MLP | Mean Squared Error | Binary Cross Entropy | Categorical Cross Entropy", "Duration in timestamp": "59:58"},
+      {"Title": "Backpropagation Algorithm | MLP Part 6", "Duration in timestamp": "1:00:05"},
+      {"Title": "Backpropagation in Matrix Form | MLP Part 7", "Duration": "59:56"},
+      {"Title": "Problem with Multi Layer Perceptron", "Duration in timestamp": "12:15"},
+      {"Title": "Introduction to Convolutional Neural Networks (CNN) | CNN Part 1", "Duration in timestamp": "40:50"},
+      {"Title": "Convolution Operation | CNN Part 2", "Duration in timestamp": "39:56"},
+      {"Title": "Feature Detection | CNN Part 3", "Duration in timestamp": "29:05"},
+      {"Title": "Padding | CNN Part 4", "Duration in timestamp": "22:31"},
+      {"Title": "Strided Convolutions | CNN Part 5", "Duration in timestamp": "18:27"},
+      {"Title": "3D Convolutions | CNN Part 6", "Duration in timestamp": "15:23"},
+      {"Title": "Pooling Layer | CNN Part 7", "Duration in timestamp": "31:42"},
+      {"Title": "CNN Architecture | CNN Part 8", "Duration in timestamp": "25:31"},
+      {"Title": "Implementation of CNN using TensorFlow", "Duration in timestamp": "1:10:04"},
+      {"Title": "AlexNet Architecture | Deep Learning | CNN Part 9", "Duration in timestamp": "28:55"},
+      {"Title": "VGG-16 Architecture | Deep Learning | CNN Part 10", "Duration in timestamp": "25:01"},
+      {"Title": "ResNet Architecture | Deep Learning | CNN Part 11", "Duration in timestamp": "32:05"},
+      {"Title": "InceptionNet Architecture | Deep Learning | CNN Part 12", "Duration in timestamp": "35:01"},
+      {"Title": "Introduction to Recurrent Neural Networks (RNN) | RNN Part 1", "Duration in timestamp": "40:02"},
+      {"Title": "Types of RNN | RNN Part 2", "Duration in timestamp": "25:10"},
+      {"Title": "Backpropagation Through Time (BPTT) | RNN Part 3", "Duration in timestamp": "59:56"},
+      {"Title": "Vanishing/Exploding Gradient Problem | RNN Part 4", "Duration in timestamp": "38:05"},
+      {"Title": "Long Short Term Memory (LSTM) | RNN Part 5", "Duration in timestamp": "1:05:00"},
+      {"Title": "Gated Recurrent Unit (GRU) | RNN Part 6", "Duration in timestamp": "45:00"},
+      {"Title": "Seq2Seq Models | RNN Part 7", "Duration in timestamp": "50:00"},
+      {"Title": "Attention Mechanism | RNN Part 8", "Duration in timestamp": "1:15:00"},
+      {"Title": "Transformer Architecture | RNN Part 9", "Duration in timestamp": "1:30:00"},
+      {"Title": "Introduction to Generative Adversarial Networks (GAN) | GAN Part 1", "Duration in timestamp": "45:00"},
+      {"Title": "Discriminator and Generator | GAN Part 2", "Duration in timestamp": "30:00"},
+      {"Title": "Training GANs | GAN Part 3", "Duration in timestamp": "55:00"},
+      {"Title": "Deep Convolutional GAN (DCGAN) | GAN Part 4", "Duration in timestamp": "1:00:00"},
+      {"Title": "Conditional GAN (CGAN) | GAN Part 5", "Duration in timestamp": "40:00"},
+      {"Title": "Wasserstein GAN (WGAN) | GAN Part 6", "Duration in timestamp": "1:10:00"},
+      {"Title": "Introduction to Autoencoders | Autoencoder Part 1", "Duration in timestamp": "35:00"},
+      {"Title": "Types of Autoencoders | Autoencoder Part 2", "Duration in timestamp": "45:00"},
+      {"Title": "Variational Autoencoders (VAE) | Autoencoder Part 3", "Duration in timestamp": "1:00:00"},
+      {"Title": "Denoising Autoencoders | Autoencoder Part 4", "Duration in timestamp": "30:00"},
+      {"Title": "Sparse Autoencoders | Autoencoder Part 5", "Duration in timestamp": "25:00"},
+      {"Title": "Introduction to Reinforcement Learning | RL Part 1", "Duration in timestamp": "50:00"},
+      {"Title": "Markov Decision Process (MDP) | RL Part 2", "Duration in timestamp": "1:00:00"},
+      {"Title": "Value Iteration | RL Part 3", "Duration in timestamp": "45:00"},
+      {"Title": "Policy Iteration | RL Part 4", "Duration in timestamp": "55:00"},
+      {"Title": "Q-Learning | RL Part 5", "Duration in timestamp": "1:10:00"},
+      {"Title": "Deep Q-Networks (DQN) | RL Part 6", "Duration in timestamp": "1:20:00"},
+      {"Title": "Policy Gradient Methods | RL Part 7", "Duration in timestamp": "1:30:00"},
+      {"Title": "Actor-Critic Methods | RL Part 8", "Duration in timestamp": "1:40:00"},
+      {"Title": "Introduction to Transfer Learning | TL Part 1", "Duration in timestamp": "30:00"},
+      {"Title": "Fine-tuning Pre-trained Models | TL Part 2", "Duration in timestamp": "40:00"},
+      {"Title": "Feature Extraction with TL | TL Part 3", "Duration in timestamp": "35:00"},
+      {"Title": "Domain Adaptation | TL Part 4", "Duration in timestamp": "50:00"},
+      {"Title": "Zero-shot and Few-shot Learning | TL Part 5", "Duration in timestamp": "1:00:00"},
+      {"Title": "Introduction to Explainable AI (XAI) | XAI Part 1", "Duration in timestamp": "45:00"},
+      {"Title": "LIME (Local Interpretable Model-agnostic Explanations) | XAI Part 2", "Duration in timestamp": "55:00"},
+      {"Title": "SHAP (SHapley Additive exPlanations) | XAI Part 3", "Duration in timestamp": "1:05:00"},
+      {"Title": "Counterfactual Explanations | XAI Part 4", "Duration in timestamp": "40:00"},
+      {"Title": "Adversarial Examples | XAI Part 5", "Duration in timestamp": "30:00"},
+      {"Title": "Introduction to Graph Neural Networks (GNN) | GNN Part 1", "Duration in timestamp": "40:00"},
+      {"Title": "Graph Convolutional Networks (GCN) | GNN Part 2", "Duration in timestamp": "50:00"},
+      {"Title": "Graph Attention Networks (GAT) | GNN Part 3", "Duration in timestamp": "1:00:00"},
+      {"Title": "Applications of GNNs | GNN Part 4", "Duration in timestamp": "35:00"},
+      {"Title": "Introduction to Federated Learning | FL Part 1", "Duration in timestamp": "45:00"},
+      {"Title": "Privacy-preserving ML | FL Part 2", "Duration in timestamp": "55:00"},
+      {"Title": "Homomorphic Encryption | FL Part 3", "Duration in timestamp": "1:05:00"},
+      {"Title": "Differential Privacy | FL Part 4", "Duration in timestamp": "40:00"},
+      {"Title": "Challenges in Federated Learning | FL Part 5", "Duration in timestamp": "30:00"},
+      {"Title": "Introduction to Quantum Machine Learning | QML Part 1", "Duration in timestamp": "50:00"},
+      {"Title": "Quantum Computing Basics | QML Part 2", "Duration in timestamp": "1:00:00"},
+      {"Title": "Quantum Neural Networks | QML Part 3", "Duration in timestamp": "1:10:00"},
+      {"Title": "Quantum Support Vector Machines | QML Part 4", "Duration in timestamp": "45:00"},
+      {"Title": "Quantum Reinforcement Learning | QML Part 5", "Duration in timestamp": "55:00"},
+      {"Title": "Ethics in AI | Ethics Part 1", "Duration in timestamp": "40:00"},
+      {"Title": "Fairness and Bias in AI | Ethics Part 2", "Duration in timestamp": "50:00"},
+      {"Title": "Accountability and Transparency | Ethics Part 3", "Duration in timestamp": "1:00:00"},
+      {"Title": "AI Safety and Control | Ethics Part 4", "Duration in timestamp": "35:00"},
+      {"Title": "Future of AI | Ethics Part 5", "Duration in timestamp": "45:00"}
+    ];
+
+    // Helper to convert "HH:MM:SS" or "MM:SS" to seconds
+    function parseDurationToSeconds(durationStr) {
+      if (!durationStr || typeof durationStr !== 'string') return 0;
+      const parts = durationStr.split(':').map(Number);
+      if (parts.length === 3) { // HH:MM:SS
+        return parts[0] * 3600 + parts[1] * 60 + parts[2];
+      } else if (parts.length === 2) { // MM:SS
+        return parts[0] * 60 + parts[1];
+      }
+      return 0; // Invalid format
+    }
+
+    const data = rawData.map((d, i) => {
+      try {
+        const durationSeconds = parseDurationToSeconds(d["Duration in timestamp"] || d["Duration"]);
+        return {
+          id: i,
+          title: d.Title || `Untitled Video ${i}`,
+          duration: durationSeconds, // in seconds
+          durationMinutes: durationSeconds / 60
+        };
+      } catch (e) {
+        console.error("Error parsing data row:", d, e);
+        return null;
+      }
+    }).filter(d => d !== null && d.duration > 0); // Filter out invalid entries
+
+    // Sort data by duration for bar chart, and by id for line chart later
+    const sortedDataByDuration = [...data].sort((a, b) => a.duration - b.duration);
+
+    // STEP 2: Set up dimensions and scales
+    const margin = {top: 40, right: 40, bottom: 60, left: 60};
+    const chartWidth = 800; // Base width for calculations
+    const chartHeight = 500; // Base height for calculations
+    
+    let width = chartWidth - margin.left - margin.right;
+    let height = chartHeight - margin.top - margin.bottom;
+
+    // Responsive dimensions handler
+    const updateDimensions = () => {
+      const containerWidth = d3.select(".chart-container").node().getBoundingClientRect().width;
+      const containerHeight = d3.select(".chart-container").node().getBoundingClientRect().height;
+
+      width = Math.min(chartWidth, containerWidth * 0.9) - margin.left - margin.right;
+      height = Math.min(chartHeight, containerHeight * 0.9) - margin.top - margin.bottom;
+
+      svg
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom);
+
+      g.attr("transform", `translate(${margin.left},${margin.top})`);
+    };
+
+    // STEP 3: Create SVG
+    const svg = d3.select("#chart-svg")
+      .attr("viewBox", `0 0 ${chartWidth} ${chartHeight}`) // Use viewBox for responsiveness
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    const g = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Axes groups
+    const xAxisGroup = g.append("g").attr("class", "x axis");
+    const yAxisGroup = g.append("g").attr("class", "y axis");
+
+    // Axis labels
+    const xAxisLabel = g.append("text")
+      .attr("class", "label")
+      .attr("y", height + margin.bottom - 10)
+      .attr("x", width / 2)
+      .text("Video Index");
+
+    const yAxisLabel = g.append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin.left + 20)
+      .attr("x", -height / 2)
+      .text("Duration (minutes)");
+
+    const tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
+    // Initial scales (will be updated in initChart and step functions)
+    let xScale, yScale, colorScale;
+
+    // STEP 4: Initialize first chart (Bar Chart - All videos)
+    function initChart() {
+      updateDimensions(); // Set initial dimensions
+
+      xScale = d3.scaleBand()
+        .domain(sortedDataByDuration.map(d => d.id))
+        .range([0, width])
+        .padding(0.1);
+
+      yScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.durationMinutes) * 1.1])
+        .range([height, 0]);
+
+      xAxisGroup.transition().duration(750).call(d3.axisBottom(xScale).tickValues([])); // No ticks for initial view
+      yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+
+      xAxisLabel.text("Video (Sorted by Duration)");
+
+      g.selectAll(".bar")
+        .data(sortedDataByDuration, d => d.id)
+        .join(
+          enter => enter.append("rect")
+            .attr("class", "bar")
+            .attr("x", d => xScale(d.id))
+            .attr("y", height)
+            .attr("width", xScale.bandwidth())
+            .attr("height", 0)
+            .attr("fill", "steelblue")
+            .call(enter => enter.transition().duration(750)
+              .attr("y", d => yScale(d.durationMinutes))
+              .attr("height", d => height - yScale(d.durationMinutes))),
+          update => update.transition().duration(750)
+            .attr("x", d => xScale(d.id))
+            .attr("y", d => yScale(d.durationMinutes))
+            .attr("width", xScale.bandwidth())
+            .attr("height", d => height - yScale(d.durationMinutes))
+            .attr("fill", "steelblue"),
+          exit => exit.transition().duration(750)
+            .attr("height", 0)
+            .attr("y", height)
+            .remove()
+        )
+        .on("mouseover", function(event, d) {
+          tooltip.transition()
+            .duration(200)
+            .style("opacity", .9);
+          tooltip.html(`${d.title}<br/><strong>${d.durationMinutes.toFixed(1)} min</strong>`)
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function(d) {
+          tooltip.transition()
+            .duration(500)
+            .style("opacity", 0);
+        });
+
+      // Remove any line or area paths if they exist from previous renders
+      g.selectAll(".line-path, .area-path, .dot").remove();
+
+      console.log("Chart initialized with all bars.");
+    }
+
+    // STEP 5: Step update functions
+    const stepFunctions = {
+      0: () => {
+        try {
+          initChart(); // Re-initialize to ensure all bars are shown and reset
+          xAxisLabel.text("Video (Sorted by Duration)");
+          yAxisLabel.text("Duration (minutes)");
+          console.log("Step 0: All video durations displayed as bars.");
+        } catch (e) { console.error("Error in step 0:", e); }
+      },
+      1: () => {
+        try {
+          const shortVideos = sortedDataByDuration.filter(d => d.durationMinutes <= 20);
+          
+          xScale.domain(sortedDataByDuration.map(d => d.id));
+          yScale.domain([0, d3.max(data, d => d.durationMinutes) * 1.1]);
+
+          xAxisGroup.transition().duration(750).call(d3.axisBottom(xScale).tickValues([]));
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+
+          g.selectAll(".bar")
+            .data(sortedDataByDuration, d => d.id)
+            .transition().duration(750)
+            .attr("fill", d => shortVideos.includes(d) ? "#66c2a5" : "#ccc")
+            .attr("x", d => xScale(d.id))
+            .attr("y", d => yScale(d.durationMinutes))
+            .attr("height", d => height - yScale(d.durationMinutes));
+
+          xAxisLabel.text("Video (Sorted by Duration)");
+          yAxisLabel.text("Duration (minutes)");
+          g.selectAll(".line-path, .area-path, .dot").remove();
+          console.log("Step 1: Short videos highlighted.");
+        } catch (e) { console.error("Error in step 1:", e); }
+      },
+      2: () => {
+        try {
+          const longVideos = sortedDataByDuration.filter(d => d.durationMinutes >= 45);
+          
+          xScale.domain(sortedDataByDuration.map(d => d.id));
+          yScale.domain([0, d3.max(data, d => d.durationMinutes) * 1.1]);
+
+          xAxisGroup.transition().duration(750).call(d3.axisBottom(xScale).tickValues([]));
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+
+          g.selectAll(".bar")
+            .data(sortedDataByDuration, d => d.id)
+            .transition().duration(750)
+            .attr("fill", d => longVideos.includes(d) ? "#fc8d62" : "#ccc")
+            .attr("x", d => xScale(d.id))
+            .attr("y", d => yScale(d.durationMinutes))
+            .attr("height", d => height - yScale(d.durationMinutes));
+
+          xAxisLabel.text("Video (Sorted by Duration)");
+          yAxisLabel.text("Duration (minutes)");
+          g.selectAll(".line-path, .area-path, .dot").remove();
+          console.log("Step 2: Longer videos highlighted.");
+        } catch (e) { console.error("Error in step 2:", e); }
+      },
+      3: () => {
+        try {
+          // Calculate average duration
+          const averageDuration = d3.mean(data, d => d.durationMinutes);
+
+          xScale.domain(sortedDataByDuration.map(d => d.id));
+          yScale.domain([0, d3.max(data, d => d.durationMinutes) * 1.1]);
+
+          xAxisGroup.transition().duration(750).call(d3.axisBottom(xScale).tickValues([]));
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+
+          g.selectAll(".bar")
+            .data(sortedDataByDuration, d => d.id)
+            .transition().duration(750)
+            .attr("fill", "steelblue")
+            .attr("x", d => xScale(d.id))
+            .attr("y", d => yScale(d.durationMinutes))
+            .attr("height", d => height - yScale(d.durationMinutes));
+
+          // Add average line
+          g.selectAll(".avg-line").remove();
+          g.append("line")
+            .attr("class", "avg-line")
+            .attr("x1", 0)
+            .attr("y1", yScale(averageDuration))
+            .attr("x2", width)
+            .attr("y2", yScale(averageDuration))
+            .attr("stroke", "red")
+            .attr("stroke-dasharray", "5,5")
+            .attr("stroke-width", 2)
+            .style("opacity", 0)
+            .transition().duration(750).style("opacity", 1);
+
+          g.selectAll(".avg-label").remove();
+          g.append("text")
+            .attr("class", "avg-label")
+            .attr("x", width - 10)
+            .attr("y", yScale(averageDuration) - 10)
+            .attr("text-anchor", "end")
+            .attr("fill", "red")
+            .text(`Average: ${averageDuration.toFixed(1)} min`)
+            .style("opacity", 0)
+            .transition().duration(750).style("opacity", 1);
+
+          xAxisLabel.text("Video (Sorted by Duration)");
+          yAxisLabel.text("Duration (minutes)");
+          g.selectAll(".line-path, .area-path, .dot").remove();
+          console.log("Step 3: Average duration indicated.");
+        } catch (e) { console.error("Error in step 3:", e); }
+      },
+      4: () => {
+        try {
+          g.selectAll(".bar, .avg-line, .avg-label").transition().duration(500).style("opacity", 0).remove();
+
+          const dataOrderedById = [...data].sort((a,b) => a.id - b.id);
+
+          xScale = d3.scaleLinear()
+            .domain([0, dataOrderedById.length - 1])
+            .range([0, width]);
+
+          yScale = d3.scaleLinear()
+            .domain([0, d3.max(dataOrderedById, d => d.durationMinutes) * 1.1])
+            .range([height, 0]);
+
+          xAxisGroup.transition().duration(750).call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format("d")));
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+
+          xAxisLabel.text("Video Index (Course Order)");
+          yAxisLabel.text("Duration (minutes)");
+
+          // Line generator
+          const line = d3.line()
+            .x(d => xScale(d.id))
+            .y(d => yScale(d.durationMinutes));
+
+          // Draw line
+          g.selectAll(".line-path").data([dataOrderedById])
+            .join(
+              enter => enter.append("path")
+                .attr("class", "line-path line")
+                .attr("d", line)
+                .attr("stroke-dasharray", function() { return this.getTotalLength(); })
+                .attr("stroke-dashoffset", function() { return this.getTotalLength(); })
+                .transition().duration(1000)
+                .attr("stroke-dashoffset", 0),
+              update => update.transition().duration(750)
+                .attr("d", line),
+              exit => exit.transition().duration(750).style("opacity", 0).remove()
+            );
+          
+          g.selectAll(".area-path, .dot").remove(); // Remove area if present
+          console.log("Step 4: Line chart showing duration by course order.");
+        } catch (e) { console.error("Error in step 4:", e); }
+      },
+      5: () => {
+        try {
+          const dataOrderedById = [...data].sort((a,b) => a.id - b.id);
+
+          xScale = d3.scaleLinear()
+            .domain([0, dataOrderedById.length - 1])
+            .range([0, width]);
+
+          yScale = d3.scaleLinear()
+            .domain([0, d3.max(dataOrderedById, d => d.durationMinutes) * 1.1])
+            .range([height, 0]);
+          
+          xAxisGroup.transition().duration(750).call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format("d")));
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+          xAxisLabel.text("Video Index (Course Order)");
+          yAxisLabel.text("Duration (minutes)");
+
+          const line = d3.line()
+            .x(d => xScale(d.id))
+            .y(d => yScale(d.durationMinutes));
+
+          g.selectAll(".line-path").data([dataOrderedById])
+            .transition().duration(750)
+            .attr("d", line);
+
+          g.selectAll(".dot")
+            .data(dataOrderedById, d => d.id)
+            .join(
+              enter => enter.append("circle")
+                .attr("class", "dot")
+                .attr("cx", d => xScale(d.id))
+                .attr("cy", d => yScale(d.durationMinutes))
+                .attr("r", 0)
+                .on("mouseover", function(event, d) {
+                  tooltip.transition().duration(200).style("opacity", .9);
+                  tooltip.html(`${d.title}<br/><strong>${d.durationMinutes.toFixed(1)} min</strong>`)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", function(d) {
+                  tooltip.transition().duration(500).style("opacity", 0);
+                })
+                .call(enter => enter.transition().duration(750).attr("r", 4)),
+              update => update.transition().duration(750)
+                .attr("cx", d => xScale(d.id))
+                .attr("cy", d => yScale(d.durationMinutes))
+                .attr("r", 4),
+              exit => exit.transition().duration(750).attr("r", 0).remove()
+            );
+          
+          g.selectAll(".area-path").remove();
+          console.log("Step 5: Dots added to line chart for individual video emphasis.");
+        } catch (e) { console.error("Error in step 5:", e); }
+      },
+      6: () => {
+        try {
+          const dataOrderedById = [...data].sort((a,b) => a.id - b.id);
+          let cumulativeDuration = 0;
+          const cumulativeData = dataOrderedById.map(d => {
+            cumulativeDuration += d.durationMinutes;
+            return { id: d.id, cumulative: cumulativeDuration };
+          });
+
+          xScale = d3.scaleLinear()
+            .domain([0, cumulativeData.length - 1])
+            .range([0, width]);
+
+          yScale = d3.scaleLinear()
+            .domain([0, d3.max(cumulativeData, d => d.cumulative) * 1.05])
+            .range([height, 0]);
+          
+          xAxisGroup.transition().duration(750).call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format("d")));
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+          xAxisLabel.text("Video Index (Course Order)");
+          yAxisLabel.text("Cumulative Duration (minutes)");
+
+          const area = d3.area()
+            .x(d => xScale(d.id))
+            .y0(height)
+            .y1(d => yScale(d.cumulative));
+
+          g.selectAll(".area-path").data([cumulativeData])
+            .join(
+              enter => enter.append("path")
+                .attr("class", "area-path area")
+                .attr("d", area)
+                .style("opacity", 0)
+                .transition().duration(1000).style("opacity", 1),
+              update => update.transition().duration(750)
+                .attr("d", area),
+              exit => exit.transition().duration(750).style("opacity", 0).remove()
+            );
+          
+          g.selectAll(".line-path, .dot").remove(); // Remove line and dots
+          console.log("Step 6: Cumulative duration area chart.");
+        } catch (e) { console.error("Error in step 6:", e); }
+      },
+      7: () => {
+        try {
+          g.selectAll(".bar, .avg-line, .avg-label, .line-path, .area-path, .dot").transition().duration(500).style("opacity", 0).remove();
+
+          const categorizedData = data.map(d => {
+            let category;
+            if (d.durationMinutes < 25) {
+              category = "Short (<25 min)";
+            } else if (d.durationMinutes >= 25 && d.durationMinutes <= 50) {
+              category = "Medium (25-50 min)";
+            } else {
+              category = "Long (>50 min)";
+            }
+            return { ...d, category: category };
+          });
+
+          const categories = ["Short (<25 min)", "Medium (25-50 min)", "Long (>50 min)"];
+          colorScale = d3.scaleOrdinal()
+            .domain(categories)
+            .range(d3.schemeCategory10);
+
+          xScale = d3.scaleBand()
+            .domain(categories)
+            .range([0, width])
+            .padding(0.2);
+
+          yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.durationMinutes) * 1.1])
+            .range([height, 0]);
+          
+          xAxisGroup.transition().duration(750).call(d3.axisBottom(xScale));
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+          xAxisLabel.text("Video Category");
+          yAxisLabel.text("Duration (minutes)");
+
+          g.selectAll(".scatter-dot")
+            .data(categorizedData, d => d.id)
+            .join(
+              enter => enter.append("circle")
+                .attr("class", "scatter-dot dot")
+                .attr("cx", d => xScale(d.category) + xScale.bandwidth() / 2 + (Math.random() - 0.5) * xScale.bandwidth() * 0.6)
+                .attr("cy", d => yScale(d.durationMinutes))
+                .attr("r", 0)
+                .attr("fill", d => colorScale(d.category))
+                .on("mouseover", function(event, d) {
+                  tooltip.transition().duration(200).style("opacity", .9);
+                  tooltip.html(`${d.title}<br/>Category: ${d.category}<br/><strong>${d.durationMinutes.toFixed(1)} min</strong>`)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", function(d) {
+                  tooltip.transition().duration(500).style("opacity", 0);
+                })
+                .call(enter => enter.transition().duration(750).attr("r", 5)),
+              update => update.transition().duration(750)
+                .attr("cx", d => xScale(d.category) + xScale.bandwidth() / 2 + (Math.random() - 0.5) * xScale.bandwidth() * 0.6)
+                .attr("cy", d => yScale(d.durationMinutes))
+                .attr("fill", d => colorScale(d.category)),
+              exit => exit.transition().duration(750).attr("r", 0).remove()
+            );
+          console.log("Step 7: Scatter plot showing video categories.");
+        } catch (e) { console.error("Error in step 7:", e); }
+      },
+      8: () => {
+        try {
+          const categorizedData = data.map(d => {
+            let category;
+            if (d.durationMinutes < 25) {
+              category = "Short (<25 min)";
+            } else if (d.durationMinutes >= 25 && d.durationMinutes <= 50) {
+              category = "Medium (25-50 min)";
+            } else {
+              category = "Long (>50 min)";
+            }
+            return { ...d, category: category };
+          });
+
+          const categories = ["Short (<25 min)", "Medium (25-50 min)", "Long (>50 min)"];
+          colorScale = d3.scaleOrdinal()
+            .domain(categories)
+            .range(d3.schemeCategory10);
+
+          xScale = d3.scaleBand()
+            .domain(categories)
+            .range([0, width])
+            .padding(0.2);
+
+          yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.durationMinutes) * 1.1])
+            .range([height, 0]);
+          
+          xAxisGroup.transition().duration(750).call(d3.axisBottom(xScale));
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+          xAxisLabel.text("Video Category");
+          yAxisLabel.text("Duration (minutes)");
+
+          g.selectAll(".scatter-dot")
+            .data(categorizedData, d => d.id)
+            .transition().duration(750)
+            .attr("cx", d => xScale(d.category) + xScale.bandwidth() / 2 + (Math.random() - 0.5) * xScale.bandwidth() * 0.6)
+            .attr("cy", d => yScale(d.durationMinutes))
+            .attr("fill", d => {
+              if (d.category === "Short (<25 min)") return colorScale(d.category);
+              if (d.category === "Long (>50 min)") return colorScale(d.category);
+              return "#ccc"; // Dim medium videos
+            });
+          console.log("Step 8: Highlighting Short and Long video categories.");
+        } catch (e) { console.error("Error in step 8:", e); }
+      },
+      9: () => {
+        try {
+          const categorizedData = data.map(d => {
+            let category;
+            if (d.durationMinutes < 25) {
+              category = "Short (<25 min)";
+            } else if (d.durationMinutes >= 25 && d.durationMinutes <= 50) {
+              category = "Medium (25-50 min)";
+            } else {
+              category = "Long (>50 min)";
+            }
+            return { ...d, category: category };
+          });
+
+          const categories = ["Short (<25 min)", "Medium (25-50 min)", "Long (>50 min)"];
+          colorScale = d3.scaleOrdinal()
+            .domain(categories)
+            .range(d3.schemeCategory10);
+
+          xScale = d3.scaleBand()
+            .domain(categories)
+            .range([0, width])
+            .padding(0.2);
+
+          yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.durationMinutes) * 1.1])
+            .range([height, 0]);
+          
+          xAxisGroup.transition().duration(750).call(d3.axisBottom(xScale));
+          yAxisGroup.transition().duration(750).call(d3.axisLeft(yScale));
+          xAxisLabel.text("Video Category");
+          yAxisLabel.text("Duration (minutes)");
+
+          g.selectAll(".scatter-dot")
+            .data(categorizedData, d => d.id)
+            .transition().duration(750)
+            .attr("cx", d => xScale(d.category) + xScale.bandwidth() / 2 + (Math.random() - 0.5) * xScale.bandwidth() * 0.6)
+            .attr("cy", d => yScale(d.durationMinutes))
+            .attr("fill", d => colorScale(d.category)); // Restore all colors
+          console.log("Step 9: All categories visible again, concluding the scatter plot analysis.");
+        } catch (e) { console.error("Error in step 9:", e); }
+      }
+    };
+
+    // STEP 6: Scrollama setup
+    const scroller = scrollama();
+    
+    scroller
+      .setup({
+        step: '.step',
+        offset: 0.5,
+        debug: false
+      })
+      .onStepEnter(handleStepEnter)
+      .onStepExit(handleStepExit);
+
+    function handleStepEnter(response) {
+      const stepIndex = parseInt(d3.select(response.element).attr("data-step"));
+      console.log(`Entering step: ${stepIndex}, direction: ${response.direction}`);
+      if (stepFunctions[stepIndex]) {
+        stepFunctions[stepIndex]();
+      }
+    }
+
+    function handleStepExit(response) {
+      // Optional: Handle exit transitions if needed, or just let enter handle changes
+      console.log(`Exiting step: ${parseInt(d3.select(response.element).attr("data-step"))}, direction: ${response.direction}`);
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      updateDimensions();
+      // Re-run the current step's function to update scales and elements
+      const currentStepElement = d3.select('.step.is-active').node();
+      if (currentStepElement) {
+        const stepIndex = parseInt(d3.select(currentStepElement).attr("data-step"));
+        if (stepFunctions[stepIndex]) {
+          stepFunctions[stepIndex]();
+        }
+      } else {
+        // If no active step (e.g., on initial load before first scroll), re-init
+        initChart();
+      }
+    });
+
+    // STEP 7: Initialize on load
+    window.addEventListener('load', () => {
+      initChart();
+    });
+  </script>
+</body>
 </html>
