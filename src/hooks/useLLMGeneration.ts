@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { createScrollytellingPrompt, createRefactorPrompt } from '../utils/llmPrompt';
-import { generateResponse, isConfigured } from '../utils/llmProvider';
+import { generateResponse, generateResponseStream, isConfigured } from '../utils/llmProvider';
 import { createDataProfile } from '../utils/dataProfile';
 
 export const useLLMGeneration = (config: any) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedHtml, setGeneratedHtml] = useState<string>('');
+  const [streamingContent, setStreamingContent] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [dataProfile, setDataProfile] = useState<any>(null);
 
@@ -42,7 +43,13 @@ export const useLLMGeneration = (config: any) => {
     return htmlContent;
   };
 
-  const generateScrollytelling = async (csvContent: string, fileName: string, storyStyle?: string, promptInput?: string) => {
+  const generateScrollytelling = async (
+    csvContent: string, 
+    fileName: string, 
+    storyStyle?: string, 
+    promptInput?: string,
+    useStreaming: boolean = false
+  ) => {
     if (!isConfigured(config)) {
       setError('Please configure your LLM API first');
       return;
@@ -50,6 +57,7 @@ export const useLLMGeneration = (config: any) => {
 
     setIsGenerating(true);
     setError('');
+    setStreamingContent('');
 
     try {
       // Create data profile instead of sending full CSV
@@ -58,40 +66,50 @@ export const useLLMGeneration = (config: any) => {
       
       console.log('Data Profile:', profile);
       
-      let result;
+      let prompt: string;
       
       if (promptInput && generatedHtml) {
         // For refactoring, include the existing HTML as context
-        const refactorPromptWithContext = createRefactorPrompt(promptInput, generatedHtml, profile, fileName);
-        result = await generateResponse(config, refactorPromptWithContext, {
-          temperature: 0.7,
-        });
+        prompt = createRefactorPrompt(promptInput, generatedHtml, profile, fileName);
       } else {
         // For initial generation, use the optional user prompt
-        const prompt = createScrollytellingPrompt(profile, fileName, storyStyle, promptInput);
-        console.log('Generated Prompt Length:', prompt.length);
-        result = await generateResponse(config, prompt, {
-          temperature: 0.7,
-        });
+        prompt = createScrollytellingPrompt(profile, fileName, storyStyle, promptInput);
+      }
+      
+      console.log('Generated Prompt Length:', prompt.length);
+
+      if (useStreaming) {
+        // Use streaming generation
+        let fullContent = '';
+        
+        for await (const chunk of generateResponseStream(config, prompt, { temperature: 0.7 })) {
+          fullContent += chunk;
+          setStreamingContent(fullContent);
+        }
+        
+        const htmlContent = extractHtmlFromResponse(fullContent);
+        setGeneratedHtml(htmlContent);
+      } else {
+        // Use non-streaming generation
+        const result = await generateResponse(config, prompt, { temperature: 0.7 });
+        const htmlContent = extractHtmlFromResponse(result.text);
+        setGeneratedHtml(htmlContent);
       }
 
-      const htmlContent = extractHtmlFromResponse(result.text);
-      
       // Additional validation for D3 and Scrollama
-      if (!htmlContent.includes('d3.v7.min.js') && !htmlContent.includes('d3js.org')) {
+      if (!generatedHtml.includes('d3.v7.min.js') && !generatedHtml.includes('d3js.org')) {
         console.warn('Generated HTML may not include D3.js library');
       }
       
-      if (!htmlContent.includes('scrollama')) {
+      if (!generatedHtml.includes('scrollama')) {
         console.warn('Generated HTML may not include Scrollama library');
       }
-
-      setGeneratedHtml(htmlContent);
     } catch (err) {
       console.error('LLM Generation Error:', err);
       setError(err instanceof Error ? err.message : 'Failed to generate scrollytelling story');
     } finally {
       setIsGenerating(false);
+      setStreamingContent('');
     }
   };
 
@@ -99,6 +117,7 @@ export const useLLMGeneration = (config: any) => {
     generateScrollytelling,
     isGenerating,
     generatedHtml,
+    streamingContent,
     dataProfile,
     error,
     setError

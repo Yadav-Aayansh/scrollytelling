@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { AlertCircle, FileText } from 'lucide-react';
 import { ConfigPanel } from './components/ConfigPanel';
 import { FileUpload } from './components/FileUpload';
+import { DemoCards } from './components/DemoCards';
 import { GenerationPanel } from './components/GenerationPanel';
 import { ResultDisplay } from './components/ResultDisplay';
+import { StreamingDisplay } from './components/StreamingDisplay';
 import { useLLMGeneration } from './hooks/useLLMGeneration';
 import { getLLMConfig, showLLMConfigModal, isConfigured } from './utils/llmProvider';
 import { useEffect } from 'react';
@@ -14,7 +16,7 @@ function App() {
   const [csvContent, setCsvContent] = useState<string>('');
   const [configLoading, setConfigLoading] = useState(true);
 
-  const { generateScrollytelling, isGenerating, generatedHtml, dataProfile, error, setError } = useLLMGeneration(config);
+  const { generateScrollytelling, isGenerating, generatedHtml, streamingContent, dataProfile, error, setError } = useLLMGeneration(config);
 
   const configured = isConfigured(config);
   const hasFile = csvFile !== null;
@@ -23,7 +25,7 @@ function App() {
   useEffect(() => {
     const loadConfig = async () => {
       try {
-        const savedConfig = await getLLMConfig();
+        const savedConfig = await getLLMConfig(false);
         setConfig(savedConfig);
       } catch (error) {
         console.error('Failed to load LLM config:', error);
@@ -38,18 +40,38 @@ function App() {
   const handleConfigureClick = async () => {
     try {
       const newConfig = await showLLMConfigModal();
-      setConfig(newConfig);
-      setError('');
-    } catch (error) {
-      if (error.message !== 'cancelled') {
-        setError('Failed to configure LLM provider');
+      if (newConfig) {
+        setConfig(newConfig);
+        setError('');
       }
+    } catch (error) {
+      console.error('Configuration error:', error);
+      setError('Failed to configure API. Please try again.');
     }
   };
 
-  const handleConfigSave = (newConfig: any) => {
-    setConfig(newConfig);
-    setError('');
+  const handleModelChange = (modelId: string, currentConfig: any) => {
+    if (currentConfig) {
+      const updatedConfig = {
+        ...currentConfig,
+        selectedModel: modelId
+      };
+      
+      // Save to localStorage
+      try {
+        const configToSave = {
+          baseUrl: updatedConfig.baseURL || updatedConfig.baseUrl,
+          apiKey: updatedConfig.apiKey,
+          selectedModel: modelId
+        };
+        localStorage.setItem('csv_scrollytelling_llm_config', JSON.stringify(configToSave));
+        setConfig(updatedConfig);
+        console.log('Model changed to:', modelId);
+      } catch (error) {
+        console.error('Failed to save model selection:', error);
+        setError('Failed to save model selection');
+      }
+    }
   };
 
   const handleFileUpload = (file: File, content: string) => {
@@ -58,16 +80,37 @@ function App() {
     setError('');
   };
 
-  const handleGenerate = async (userPrompt?: string) => {
+  const handleGenerate = async (userPrompt?: string, useStreaming?: boolean) => {
     if (!canGenerate || !csvFile || !csvContent) return;
     
-    await generateScrollytelling(csvContent, csvFile.name, undefined, userPrompt);
+    await generateScrollytelling(csvContent, csvFile.name, undefined, userPrompt, useStreaming);
   };
 
   const handleRefactor = async (refactorPrompt: string) => {
     if (!canGenerate || !csvFile || !csvContent) return;
     
     await generateScrollytelling(csvContent, csvFile.name, undefined, refactorPrompt);
+  };
+
+  const handleLoadDemo = async (demo: any) => {
+    try {
+      // Use the CSV content that was already loaded by the DemoCards component
+      const csvContent = demo.csvContent;
+      const file = demo.file;
+      
+      // Set the file and content
+      setCsvFile(file);
+      setCsvContent(csvContent);
+      setError('');
+      
+      // Auto-generate with the demo prompt if configured
+      if (configured) {
+        await generateScrollytelling(csvContent, demo.dataset, undefined, demo.prompt, true);
+      }
+    } catch (error) {
+      console.error('Error loading demo:', error);
+      setError(`Failed to load demo: ${error.message}`);
+    }
   };
 
   return (
@@ -109,7 +152,16 @@ function App() {
           config={config}
           configured={configured}
           onConfigureClick={handleConfigureClick}
+          onModelChange={handleModelChange}
         />
+
+        {/* Demo Cards - Show when configured but no file uploaded */}
+        {configured && !hasFile && !configLoading && (
+          <DemoCards
+            onLoadDemo={handleLoadDemo}
+            disabled={!configured || isGenerating}
+          />
+        )}
 
         {/* File Upload */}
         <FileUpload
@@ -128,8 +180,16 @@ function App() {
           />
         )}
 
+        {/* Streaming Display */}
+        {streamingContent && (
+          <StreamingDisplay
+            content={streamingContent}
+            isStreaming={isGenerating}
+          />
+        )}
+
         {/* Results */}
-        {generatedHtml && (
+        {generatedHtml && !streamingContent && (
           <ResultDisplay
             htmlContent={generatedHtml}
             isGenerating={isGenerating}
@@ -140,11 +200,10 @@ function App() {
         {!hasFile && configured && !configLoading && (
           <div className="bg-white rounded-xl shadow-lg p-8 text-center">
             <div className="max-w-2xl mx-auto">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Ready to Get Started!</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Or Upload Your Own Data</h2>
               <p className="text-gray-600 mb-6">
-                Upload a CSV file to transform your data into an engaging scrollytelling experience. 
-                Our AI will analyze your data and create a beautiful, interactive story with charts, 
-                insights, and smooth scroll animations.
+                Have your own dataset? Upload a CSV file to create a custom scrollytelling experience 
+                tailored to your specific data and requirements.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                 <div className="text-center">
@@ -183,8 +242,6 @@ function App() {
           </div>
         )}
       </div>
-
-
     </div>
   );
 }

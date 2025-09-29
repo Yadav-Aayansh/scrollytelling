@@ -1,22 +1,36 @@
 import React from 'react';
-import { Settings, Check } from 'lucide-react';
+import { Settings, Check, Zap } from 'lucide-react';
+import { getProviderName, getAvailableModels } from '../utils/llmProvider';
 
 interface ConfigPanelProps {
   config: any;
   configured: boolean;
   onConfigureClick: () => void;
+  onModelChange: (modelId: string, config: any) => void;
 }
 
-export const ConfigPanel: React.FC<ConfigPanelProps> = ({ config, configured, onConfigureClick }) => {
+export const ConfigPanel: React.FC<ConfigPanelProps> = ({ 
+  config, 
+  configured, 
+  onConfigureClick, 
+  onModelChange 
+}) => {
+  const availableModels = getAvailableModels(config) || [];
+  const providerName = config?.baseURL ? getProviderName(config.baseURL) : 'Not configured';
+  
+  const getCurrentModel = () => {
+    return config?.selectedModel || (availableModels.length > 0 ? availableModels[0].id : 'No model selected');
+  };
 
-  const getProviderName = () => {
-    if (!config?.baseUrl) return 'Unknown Provider';
-    
-    const url = config.baseUrl;
-    if (url.includes('openai.com')) return 'OpenAI';
-    if (url.includes('generativelanguage.googleapis.com')) return 'Google Gemini';
-    if (url.includes('aipipe.org')) return 'AI Pipe';
-    return 'Custom Provider';
+  const getCurrentModelName = () => {
+    const currentModelId = getCurrentModel();
+    const model = availableModels.find(m => m.id === currentModelId);
+    return model ? `${model.name} (${model.provider})` : currentModelId;
+  };
+
+  const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newModelId = e.target.value;
+    onModelChange(newModelId, config);
   };
 
   return (
@@ -27,15 +41,15 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({ config, configured, on
             {configured ? (
               <Check className="h-5 w-5 text-green-600" />
             ) : (
-              <Settings className="h-5 w-5 text-blue-600" />
+              <Zap className="h-5 w-5 text-blue-600" />
             )}
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-800">LLM Configuration</h2>
+            <h2 className="text-xl font-semibold text-gray-800">API Configuration</h2>
             <p className="text-sm text-gray-600">
               {configured 
-                ? `Connected to ${getProviderName()}`
-                : 'Configure your AI provider to generate stories'
+                ? `Using ${getCurrentModelName()} via ${providerName}`
+                : 'Configure your API to access AI models'
               }
             </p>
           </div>
@@ -54,6 +68,26 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({ config, configured, on
           {configured ? 'Reconfigure' : 'Configure'}
         </button>
       </div>
+
+      {/* Model Selection */}
+      {configured && availableModels.length > 0 && (
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Select AI Model ({availableModels.length} available)
+          </label>
+          <select
+            value={getCurrentModel()}
+            onChange={handleModelChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            {availableModels.map((model: any) => (
+              <option key={model.id} value={model.id}>
+                {model.name} ({model.provider})
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
     </div>
   );
 };

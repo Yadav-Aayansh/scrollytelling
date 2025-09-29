@@ -26,7 +26,7 @@ You have deep expertise in D3.js v7, Scrollama, responsive design, and performan
   const strictRequirements = `**STRICT TECHNICAL REQUIREMENTS - NO EXCEPTIONS:**
 
 1. **HTML STRUCTURE** (EXACT format required):
-   \`\`\`html
+   \`\`\`
    <!DOCTYPE html>
    <html lang="en">
    <head>
@@ -42,7 +42,7 @@ You have deep expertise in D3.js v7, Scrollama, responsive design, and performan
    \`\`\`
 
 2. **CSS REQUIREMENTS** (Copy this EXACT structure):
-   \`\`\`css
+   \`\`\`
    * { margin: 0; padding: 0; box-sizing: border-box; }
    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
    
@@ -83,7 +83,7 @@ You have deep expertise in D3.js v7, Scrollama, responsive design, and performan
    \`\`\`
 
 3. **JAVASCRIPT REQUIREMENTS** (MANDATORY structure):
-   \`\`\`javascript
+   \`\`\`
    // STEP 1: Parse and validate data
    const rawData = [/* CSV data as JSON */];
    const data = rawData.filter(d => /* validation logic */);
