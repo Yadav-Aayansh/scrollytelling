@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Upload, File, X } from 'lucide-react';
+import { getAppConfig } from '../utils/config';
 
 interface FileUploadProps {
   onFileUpload: (file: File, csvContent: string) => void;
@@ -11,6 +12,20 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload, disabled }
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [appConfig, setAppConfig] = useState<any>(null);
+
+  React.useEffect(() => {
+    const loadAppConfig = async () => {
+      try {
+        const config = await getAppConfig();
+        setAppConfig(config);
+      } catch (error) {
+        console.error('Failed to load app config:', error);
+      }
+    };
+
+    loadAppConfig();
+  }, []);
 
   const readFileAsText = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -31,8 +46,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload, disabled }
   const processFile = async (file: File) => {
     if (isProcessing) return;
     
-    if (!file.name.toLowerCase().endsWith('.csv')) {
-      alert('Please upload a CSV file');
+    const supportedFormats = appConfig?.supportedFormats || ['.csv'];
+    const isSupported = supportedFormats.some(format => 
+      file.name.toLowerCase().endsWith(format.toLowerCase())
+    );
+    
+    if (!isSupported) {
+      alert(`Please upload a supported file format: ${supportedFormats.join(', ')}`);
       return;
     }
 
@@ -158,7 +178,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload, disabled }
             {isProcessing ? 'Processing file...' : 'Drop your CSV file here, or click to browse'}
           </p>
           <p className="text-sm text-gray-500">
-            Supports CSV files up to 10MB
+            Supports {appConfig?.supportedFormats?.join(', ') || 'CSV files'} up to {appConfig?.maxFileSize || '10MB'}
           </p>
         </div>
       )}

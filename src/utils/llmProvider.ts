@@ -1,21 +1,15 @@
 import { openaiConfig } from 'tailwind-llm-provider';
+import { getLLMConfigData } from './config';
 
-// Predefined models instead of fetching from API
-const PREDEFINED_MODELS = [
-  { id: "google/gemini-2.5-flash", name: "Gemini 2.5 Flash", provider: "Google" },
-  { id: "openai/gpt-5-codex", name: "GPT-5 Codex", provider: "OpenAI" },
-  { id: "openai/gpt-5-mini", name: "GPT-5 Mini", provider: "OpenAI" },
-  { id: "qwen/qwen3-Max", name: "Qwen 3 Max", provider: "Alibaba" },
-  { id: "x-ai/grok-4-fast", name: "Grok 4", provider: "xAI" },
-  { id: "anthropic/claude-opus-4.1", name: "Claude 4.1 Opus", provider: "Anthropic" }
-];
+// Cache for config data
+let llmConfigCache: any = null;
 
-// Define your OpenRouter-style providers
-const OPENROUTER_PROVIDERS = [
-  { url: "https://openrouter.ai/api/v1", name: "OpenRouter" },
-  { url: "https://aipipe.org/openrouter/v1", name: "AI Pipe" },
-  { url: "https://llmfoundry.straive.com/openrouter/v1", name: "LLM Foundry" }
-];
+async function getLLMConfigCached() {
+  if (!llmConfigCache) {
+    llmConfigCache = await getLLMConfigData();
+  }
+  return llmConfigCache;
+}
 
 // Custom validation function that doesn't fetch models
 async function validateApiKey(baseUrl, apiKey) {
@@ -36,6 +30,8 @@ async function validateApiKey(baseUrl, apiKey) {
 // Configuration function using tailwind-llm-provider
 export async function getLLMConfig(forceShow = false) {
   try {
+    const llmConfig = await getLLMConfigCached();
+    
     // First try to load from localStorage with our custom key
     const savedData = localStorage.getItem('csv_scrollytelling_llm_config');
     let savedConfig = null;
@@ -48,8 +44,8 @@ export async function getLLMConfig(forceShow = false) {
             baseURL: savedConfig.baseUrl,
             baseUrl: savedConfig.baseUrl,
             apiKey: savedConfig.apiKey,
-            models: PREDEFINED_MODELS,
-            selectedModel: savedConfig.selectedModel || PREDEFINED_MODELS[0].id
+            models: llmConfig.predefinedModels,
+            selectedModel: savedConfig.selectedModel || llmConfig.predefinedModels[0].id
           };
         }
       } catch (e) {
@@ -60,7 +56,7 @@ export async function getLLMConfig(forceShow = false) {
     const config = await openaiConfig({
       storage: localStorage,
       key: "csv_scrollytelling_llm_config",
-      baseUrls: OPENROUTER_PROVIDERS,
+      baseUrls: llmConfig.providers,
       show: forceShow,
       title: "OpenRouter API Configuration",
       baseUrlLabel: "Choose API Provider",
@@ -75,14 +71,14 @@ export async function getLLMConfig(forceShow = false) {
       const configToSave = {
         baseUrl: config.baseURL || config.baseUrl,
         apiKey: config.apiKey,
-        selectedModel: savedConfig?.selectedModel || PREDEFINED_MODELS[0].id
+        selectedModel: savedConfig?.selectedModel || llmConfig.predefinedModels[0].id
       };
       localStorage.setItem('csv_scrollytelling_llm_config', JSON.stringify(configToSave));
       
       return {
         ...config,
-        models: PREDEFINED_MODELS,
-        selectedModel: savedConfig?.selectedModel || PREDEFINED_MODELS[0].id
+        models: llmConfig.predefinedModels,
+        selectedModel: savedConfig?.selectedModel || llmConfig.predefinedModels[0].id
       };
     }
 
@@ -113,8 +109,9 @@ export async function* generateResponseStream(config: any, prompt: string, optio
     "X-Title": "CSV Scrollytelling Generator"
   };
 
+  const llmConfig = await getLLMConfigCached();
   // Use the first available model if no specific model is selected
-  const model = config.selectedModel || config.models?.[0] || "google/gemini-2.5-flash";
+  const model = config.selectedModel || config.models?.[0]?.id || llmConfig.predefinedModels[0].id;
 
   const response = await fetch(`${config.baseURL}/chat/completions`, {
     method: "POST",
@@ -192,12 +189,18 @@ export function isConfigured(config: any) {
 }
 
 // Get available models from config
-export function getAvailableModels(config: any) {
-  return config?.models || PREDEFINED_MODELS;
+export async function getAvailableModels(config: any) {
+  if (config?.models) {
+    return config.models;
+  }
+  
+  const llmConfig = await getLLMConfigCached();
+  return llmConfig.predefinedModels;
 }
 
 // Get provider name from base URL
-export function getProviderName(baseURL: string) {
-  const provider = OPENROUTER_PROVIDERS.find(p => p.url === baseURL);
+export async function getProviderName(baseURL: string) {
+  const llmConfig = await getLLMConfigCached();
+  const provider = llmConfig.providers.find(p => p.url === baseURL);
   return provider?.name || 'Custom Provider';
 }

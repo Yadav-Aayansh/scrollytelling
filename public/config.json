@@ -1,0 +1,44 @@
+{
+  "demos": [
+    {
+      "id": "sample1",
+      "title": "Smartphones Dataset",
+      "description": "Analyze smartphone sales, pricing trends, and feature adoption across brands and regions. Understand how consumer preferences evolve with technology and market competition.",
+      "dataset": "sample1.csv",
+      "htmlFile": "sample1.html",
+      "prompt": "Create an engaging scrollytelling story about smartphone adoption and sales trends. Focus on:\n\n1. **Sales Trends**: Show growth patterns across years, regions, and brands  \n2. **Feature Evolution**: Highlight how specs (RAM, camera, battery, etc.) influence consumer demand  \n3. **Pricing Insights**: Compare budget vs premium smartphone markets  \n4. **Market Competition**: Visualize brand-wise market share and shifts over time  \n\nMake it engaging for tech enthusiasts and business analysts. Use visualizations to reveal hidden dynamics in the smartphone industry.",
+      "tags": ["Smartphones", "Technology", "Market Trends", "Consumer Behavior"]
+    },
+    {
+      "id": "sample2",
+      "title": "100 Days of Deep Learning",
+      "description": "Track your deep learning journey over 100 days, exploring models, datasets, and progress milestones. See how skills improve and knowledge compounds with consistent practice.",
+      "dataset": "sample2.csv",
+      "htmlFile": "sample2.html",
+      "prompt": "Create a compelling scrollytelling narrative about a 100-day deep learning journey. Focus on:\n\n1. **Learning Progression**: Show daily/weekly growth in concepts and coding skills  \n2. **Model Building**: Highlight experiments with CNNs, RNNs, Transformers, etc.  \n3. **Project Milestones**: Visualize datasets used, models trained, and outcomes achieved  \n4. **Skill Growth**: Demonstrate how consistency accelerates expertise  \n\nMake it inspiring for learners and practitioners. Use visualizations that capture growth, challenges, and achievements in the deep learning journey.",
+      "tags": ["Deep Learning", "AI", "Education", "Learning Journey"]
+    }
+  ],
+  "app": {
+    "title": "CSV Scrollytelling Generator",
+    "description": "Transform data into compelling stories",
+    "maxFileSize": "10MB",
+    "supportedFormats": [".csv"]
+  },
+  "llm": {
+    "defaultTemperature": 0.7,
+    "predefinedModels": [
+      { "id": "google/gemini-2.5-flash", "name": "Gemini 2.5 Flash", "provider": "Google" },
+      { "id": "openai/gpt-5-codex", "name": "GPT-5 Codex", "provider": "OpenAI" },
+      { "id": "openai/gpt-5-mini", "name": "GPT-5 Mini", "provider": "OpenAI" },
+      { "id": "qwen/qwen3-Max", "name": "Qwen 3 Max", "provider": "Alibaba" },
+      { "id": "x-ai/grok-4-fast", "name": "Grok 4", "provider": "xAI" },
+      { "id": "anthropic/claude-opus-4.1", "name": "Claude 4.1 Opus", "provider": "Anthropic" }
+    ],
+    "providers": [
+      { "url": "https://openrouter.ai/api/v1", "name": "OpenRouter" },
+      { "url": "https://aipipe.org/openrouter/v1", "name": "AI Pipe" },
+      { "url": "https://llmfoundry.straive.com/openrouter/v1", "name": "LLM Foundry" }
+    ]
+  }
+}

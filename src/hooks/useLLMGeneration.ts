@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createScrollytellingPrompt, createRefactorPrompt } from '../utils/llmPrompt';
 import { generateResponse, generateResponseStream, isConfigured } from '../utils/llmProvider';
 import { createDataProfile } from '../utils/dataProfile';
+import { getLLMConfigData } from '../utils/config';
 
 export const useLLMGeneration = (config: any) => {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -60,6 +61,8 @@ export const useLLMGeneration = (config: any) => {
     setStreamingContent('');
 
     try {
+      const llmConfig = await getLLMConfigData();
+      
       // Create data profile instead of sending full CSV
       const profile = createDataProfile(csvContent);
       setDataProfile(profile);
@@ -82,7 +85,7 @@ export const useLLMGeneration = (config: any) => {
         // Use streaming generation
         let fullContent = '';
         
-        for await (const chunk of generateResponseStream(config, prompt, { temperature: 0.7 })) {
+        for await (const chunk of generateResponseStream(config, prompt, { temperature: llmConfig.defaultTemperature })) {
           fullContent += chunk;
           setStreamingContent(fullContent);
         }
@@ -91,7 +94,7 @@ export const useLLMGeneration = (config: any) => {
         setGeneratedHtml(htmlContent);
       } else {
         // Use non-streaming generation
-        const result = await generateResponse(config, prompt, { temperature: 0.7 });
+        const result = await generateResponse(config, prompt, { temperature: llmConfig.defaultTemperature });
         const htmlContent = extractHtmlFromResponse(result.text);
         setGeneratedHtml(htmlContent);
       }

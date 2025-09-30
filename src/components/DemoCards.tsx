@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { Play, Eye, FileText, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { getDemoConfig, getDemoDatasetUrl, getDemoHtmlUrl } from '../utils/config';
 
 interface DemoCard {
   id: string;
   title: string;
   description: string;
   dataset: string;
-  datasetUrl: string;
-  prompt: string;
   htmlFile: string;
-  previewImage?: string;
+  prompt: string;
   tags: string[];
+  // Runtime properties
+  datasetUrl?: string;
+  csvContent?: string;
+  file?: File;
 }
 
 interface DemoCardsProps {
@@ -18,55 +21,42 @@ interface DemoCardsProps {
   disabled?: boolean;
 }
 
-const DEMO_STORIES: DemoCard[] = [
-  {
-    id: 'sample1',
-    title: 'Smartphones Dataset',
-    description: 'Analyze smartphone sales, pricing trends, and feature adoption across brands and regions. Understand how consumer preferences evolve with technology and market competition.',
-    dataset: 'sample1.csv',
-    datasetUrl: 'https://raw.githubusercontent.com/Yadav-Aayansh/scrollytelling/main/public/sample1.csv',
-    htmlFile: 'sample1.html',
-    prompt: `Create an engaging scrollytelling story about smartphone adoption and sales trends. Focus on:
-
-1. **Sales Trends**: Show growth patterns across years, regions, and brands  
-2. **Feature Evolution**: Highlight how specs (RAM, camera, battery, etc.) influence consumer demand  
-3. **Pricing Insights**: Compare budget vs premium smartphone markets  
-4. **Market Competition**: Visualize brand-wise market share and shifts over time  
-
-Make it engaging for tech enthusiasts and business analysts. Use visualizations to reveal hidden dynamics in the smartphone industry.`,
-    tags: ['Smartphones', 'Technology', 'Market Trends', 'Consumer Behavior']
-  },
-  {
-    id: 'sample2',
-    title: '100 Days of Deep Learning',
-    description: 'Track your deep learning journey over 100 days, exploring models, datasets, and progress milestones. See how skills improve and knowledge compounds with consistent practice.',
-    dataset: 'sample2.csv',
-    datasetUrl: 'https://raw.githubusercontent.com/Yadav-Aayansh/scrollytelling/main/public/sample2.csv',
-    htmlFile: 'sample2.html',
-    prompt: `Create a compelling scrollytelling narrative about a 100-day deep learning journey. Focus on:
-
-1. **Learning Progression**: Show daily/weekly growth in concepts and coding skills  
-2. **Model Building**: Highlight experiments with CNNs, RNNs, Transformers, etc.  
-3. **Project Milestones**: Visualize datasets used, models trained, and outcomes achieved  
-4. **Skill Growth**: Demonstrate how consistency accelerates expertise  
-
-Make it inspiring for learners and practitioners. Use visualizations that capture growth, challenges, and achievements in the deep learning journey.`,
-    tags: ['Deep Learning', 'AI', 'Education', 'Learning Journey']
-  }
-];
-
 export const DemoCards: React.FC<DemoCardsProps> = ({ onLoadDemo, disabled }) => {
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [demoStories, setDemoStories] = useState<DemoCard[]>([]);
+  const [configLoaded, setConfigLoaded] = useState(false);
+  const [configError, setConfigError] = useState<string | null>(null);
   const [csvData, setCsvData] = useState<{ [key: string]: string }>({});
   const [htmlData, setHtmlData] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+
+  // Load demo configuration on component mount
+  React.useEffect(() => {
+    const loadDemoConfig = async () => {
+      try {
+        const demos = await getDemoConfig();
+        const demosWithUrls = demos.map(demo => ({
+          ...demo,
+          datasetUrl: getDemoDatasetUrl(demo.dataset)
+        }));
+        setDemoStories(demosWithUrls);
+        setConfigLoaded(true);
+      } catch (error) {
+        console.error('Failed to load demo config:', error);
+        setConfigError('Failed to load demo configuration');
+        setConfigLoaded(true);
+      }
+    };
+
+    loadDemoConfig();
+  }, []);
 
   const loadCsvData = async (demo: DemoCard) => {
     if (csvData[demo.id]) return csvData[demo.id];
     
     setLoading(prev => ({ ...prev, [demo.id]: true }));
     try {
-      const response = await fetch(demo.datasetUrl);
+      const response = await fetch(demo.datasetUrl!);
       if (!response.ok) throw new Error('Failed to fetch CSV');
       const data = await response.text();
       setCsvData(prev => ({ ...prev, [demo.id]: data }));
@@ -86,7 +76,7 @@ export const DemoCards: React.FC<DemoCardsProps> = ({ onLoadDemo, disabled }) =>
     
     setLoading(prev => ({ ...prev, [demo.id]: true }));
     try {
-      const response = await fetch(`${import.meta.env.BASE_URL || '/'}${demo.htmlFile}`);
+      const response = await fetch(getDemoHtmlUrl(demo.htmlFile));
       if (!response.ok) {
         throw new Error(`Failed to fetch ${demo.htmlFile}: ${response.status} ${response.statusText}`);
       }
@@ -149,6 +139,43 @@ export const DemoCards: React.FC<DemoCardsProps> = ({ onLoadDemo, disabled }) =>
     setExpandedCard(expandedCard === demoId ? null : demoId);
   };
 
+  // Show loading state while config is being loaded
+  if (!configLoaded) {
+    return (
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-indigo-100 rounded-lg">
+            <FileText className="h-5 w-5 text-indigo-600" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800">Demo Stories</h2>
+            <p className="text-sm text-gray-600">Loading demo configurations...</p>
+          </div>
+        </div>
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if config failed to load
+  if (configError) {
+    return (
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-red-100 rounded-lg">
+            <FileText className="h-5 w-5 text-red-600" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800">Demo Stories</h2>
+            <p className="text-sm text-red-600">{configError}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
       <div className="flex items-center gap-3 mb-6">
@@ -162,7 +189,7 @@ export const DemoCards: React.FC<DemoCardsProps> = ({ onLoadDemo, disabled }) =>
       </div>
 
       <div className="space-y-6">
-        {DEMO_STORIES.map((demo) => {
+        {demoStories.map((demo) => {
           const isExpanded = expandedCard === demo.id;
           const isLoading = loading[demo.id];
           

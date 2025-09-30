@@ -15,8 +15,33 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   onConfigureClick, 
   onModelChange 
 }) => {
-  const availableModels = getAvailableModels(config) || [];
-  const providerName = config?.baseURL ? getProviderName(config.baseURL) : 'Not configured';
+  const [availableModels, setAvailableModels] = React.useState<any[]>([]);
+  const [providerName, setProviderName] = React.useState<string>('Not configured');
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const loadConfigData = async () => {
+      try {
+        const models = await getAvailableModels(config);
+        setAvailableModels(models || []);
+        
+        if (config?.baseURL) {
+          const name = await getProviderName(config.baseURL);
+          setProviderName(name);
+        } else {
+          setProviderName('Not configured');
+        }
+      } catch (error) {
+        console.error('Error loading config data:', error);
+        setAvailableModels([]);
+        setProviderName('Error loading config');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadConfigData();
+  }, [config]);
   
   const getCurrentModel = () => {
     return config?.selectedModel || (availableModels.length > 0 ? availableModels[0].id : 'No model selected');
@@ -47,9 +72,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
           <div>
             <h2 className="text-xl font-semibold text-gray-800">API Configuration</h2>
             <p className="text-sm text-gray-600">
-              {configured 
+              {configured && !loading
                 ? `Using ${getCurrentModelName()} via ${providerName}`
-                : 'Configure your API to access AI models'
+                : loading 
+                  ? 'Loading configuration...'
+                  : 'Configure your API to access AI models'
               }
             </p>
           </div>
@@ -70,7 +97,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
       </div>
 
       {/* Model Selection */}
-      {configured && availableModels.length > 0 && (
+      {configured && availableModels.length > 0 && !loading && (
         <div className="mt-4 pt-4 border-t border-gray-200">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Select AI Model ({availableModels.length} available)

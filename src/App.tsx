@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AlertCircle, FileText } from 'lucide-react';
+import { getAppConfig } from './utils/config';
 import { ConfigPanel } from './components/ConfigPanel';
 import { FileUpload } from './components/FileUpload';
 import { DemoCards } from './components/DemoCards';
@@ -15,6 +16,7 @@ function App() {
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [csvContent, setCsvContent] = useState<string>('');
   const [configLoading, setConfigLoading] = useState(true);
+  const [appConfig, setAppConfig] = useState<any>(null);
 
   const { generateScrollytelling, isGenerating, generatedHtml, streamingContent, dataProfile, error, setError } = useLLMGeneration(config);
 
@@ -25,6 +27,9 @@ function App() {
   useEffect(() => {
     const loadConfig = async () => {
       try {
+        const appConfigData = await getAppConfig();
+        setAppConfig(appConfigData);
+        
         const savedConfig = await getLLMConfig(false);
         setConfig(savedConfig);
       } catch (error) {
@@ -124,8 +129,12 @@ function App() {
                 <FileText className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">CSV Scrollytelling Generator</h1>
-                <p className="text-sm text-gray-500">Transform data into compelling stories</p>
+                <h1 className="text-xl font-bold text-gray-900">
+                  {appConfig?.title || 'CSV Scrollytelling Generator'}
+                </h1>
+                <p className="text-sm text-gray-500">
+                  {appConfig?.description || 'Transform data into compelling stories'}
+                </p>
               </div>
             </div>
           </div>
